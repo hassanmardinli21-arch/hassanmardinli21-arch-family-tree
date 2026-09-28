@@ -1,1 +1,1288 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>شجرة العائلة المتقدمة</title>
+<link rel="icon" type="image/png" href="/favicon-96x96.png" sizes="96x96" />
+<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+<link rel="shortcut icon" href="/favicon.ico" />
+<link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+<link rel="manifest" href="/site.webmanifest" />
+<style>
+    * { box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; margin: 0; padding: 0; }
+    body {
+        background: linear-gradient(135deg, #e8f0fe 0%, #d4e4f7 100%);
+        min-height: 100vh; padding: 20px;
+    }
+    .container {
+        max-width: 1300px; margin: auto; background: white; padding: 25px;
+        border-radius: 30px; box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    }
+    h1 {
+        text-align: center; color: #1a237e; font-size: 30px;
+        border-bottom: 4px solid #3f51b5; padding-bottom: 15px; margin-bottom: 8px;
+    }
+    .subtitle { text-align: center; color: #5c6bc0; margin-bottom: 20px; font-size: 14px; }
 
+    .login-overlay {
+        position: fixed; inset: 0;
+        background: linear-gradient(135deg, #1a237e 0%, #3f51b5 50%, #8e24aa 100%);
+        z-index: 999999;
+        display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .login-box {
+        background: white; border-radius: 30px; padding: 40px 32px;
+        max-width: 460px; width: 100%;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.4);
+        animation: fadeIn 0.4s ease; text-align: center;
+    }
+    @keyframes fadeIn { from { opacity: 0; transform: scale(0.95) translateY(20px); } to { opacity: 1; transform: scale(1) translateY(0); } }
+    .login-icon { font-size: 65px; margin-bottom: 8px; }
+    .login-box h2 { color: #1a237e; font-size: 24px; margin-bottom: 6px; }
+    .login-subtitle { color: #5c6bc0; font-size: 13.5px; margin-bottom: 22px; line-height: 1.7; }
+    .login-input-wrap { position: relative; margin-bottom: 12px; }
+    .login-input-wrap input {
+        width: 100%; padding: 15px 48px 15px 20px;
+        border: 2px solid #c5cae9; border-radius: 15px;
+        font-size: 16px; text-align: center; letter-spacing: 3px;
+        font-weight: bold; transition: .3s;
+    }
+    .login-input-wrap input:focus {
+        border-color: #3f51b5; outline: none;
+        box-shadow: 0 0 0 4px rgba(63, 81, 181, 0.15);
+    }
+    .toggle-pw {
+        position: absolute; left: 12px; top: 50%; transform: translateY(-50%);
+        background: transparent; border: none; font-size: 19px; cursor: pointer; padding: 5px;
+    }
+
+    .remember-row {
+        display: flex; align-items: center; justify-content: center;
+        gap: 8px; margin: 10px 0 8px; font-size: 13.5px; color: #283593;
+        font-weight: bold; cursor: pointer; user-select: none;
+    }
+    .remember-row input {
+        width: 18px; height: 18px; cursor: pointer; accent-color: #3f51b5;
+    }
+    .remember-row label { cursor: pointer; }
+
+    .login-btn {
+        width: 100%; padding: 15px; border: none; border-radius: 15px;
+        background: linear-gradient(135deg, #3f51b5, #5c6bc0);
+        color: white; font-weight: bold; font-size: 16px; cursor: pointer;
+        transition: .3s; margin-top: 5px;
+    }
+    .login-btn:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(63,81,181,0.4); }
+    .login-btn:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+    .login-hint {
+        color: #666; font-size: 12.5px; margin-top: 16px; line-height: 1.9;
+        background: #f5f7ff; padding: 12px 15px; border-radius: 12px;
+    }
+    .login-error {
+        background: #ffebee; color: #c62828; padding: 10px 15px;
+        border-radius: 10px; font-size: 13px; margin-bottom: 12px;
+        border-right: 4px solid #e53935; display: none;
+    }
+    .login-error.show { display: block; }
+
+    .toolbar {
+        display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+        background: #f5f7ff; padding: 14px; border-radius: 20px;
+        margin-bottom: 18px; border: 1px solid #e8eaf6;
+    }
+    .toolbar button, .toolbar label {
+        padding: 10px 16px; border: none; border-radius: 25px; font-size: 13.5px;
+        font-weight: bold; cursor: pointer; transition: all 0.3s; color: white;
+    }
+    .toolbar button:hover, .toolbar label:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.2); }
+    .btn-primary { background: #3f51b5; } .btn-primary:hover { background: #303f9f; }
+    .btn-success { background: #43a047; } .btn-success:hover { background: #2e7d32; }
+    .btn-danger  { background: #e53935; } .btn-danger:hover  { background: #c62828; }
+    .btn-warning { background: #fb8c00; } .btn-warning:hover { background: #e65100; }
+    .btn-teal    { background: #00897b; } .btn-teal:hover    { background: #00695c; }
+    .btn-about   { background: #6a1b9a; } .btn-about:hover   { background: #4a148c; }
+    .btn-logout  { background: #37474f; } .btn-logout:hover  { background: #263238; }
+    .toolbar input[type="file"] { display: none; }
+
+    .badge {
+        background: #ffd54f; color: #1a237e; padding: 8px 15px; border-radius: 30px;
+        font-weight: bold; font-size: 13.5px; display: inline-flex; align-items: center; gap: 5px;
+    }
+    .save-badge { background: #c8e6c9; color: #1b5e20; opacity: 0.35; transition: .3s; }
+    .save-badge.show { opacity: 1; background: #66bb6a; color: #fff; }
+    .sync-badge { background: #e1f5fe; color: #01579b; }
+    .sync-badge.on { background: #66bb6a; color: white; }
+    .sync-badge.off { background: #ef9a9a; color: #b71c1c; }
+    .sync-badge.syncing { background: #ffb74d; color: #e65100; }
+
+    .stats {
+        display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;
+        margin: 10px 0; padding: 12px; background: #f5f7ff; border-radius: 15px;
+    }
+    .stats .stat-item {
+        background: white; padding: 8px 18px; border-radius: 25px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.06); font-weight: bold; color: #1a237e; font-size: 13.5px;
+    }
+    .stats .stat-item span { color: #3f51b5; }
+
+    .search-box { display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap; }
+    .search-box input {
+        flex: 1; min-width: 200px; padding: 12px 18px; border-radius: 30px;
+        border: 2px solid #e8eaf6; font-size: 15px;
+    }
+    .search-box input:focus { border-color: #3f51b5; outline: none; }
+    .search-box button {
+        padding: 12px 22px; border: none; border-radius: 30px; background: #3f51b5;
+        color: white; font-weight: bold; cursor: pointer; transition: 0.3s;
+    }
+    .search-box button:hover { background: #303f9f; }
+
+    .view-toggle { display: flex; gap: 8px; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
+    .view-toggle button {
+        padding: 10px 22px; border-radius: 25px; border: 2px solid #c5cae9;
+        background: white; color: #3f51b5; font-weight: bold; cursor: pointer; transition: .3s; font-size: 13.5px;
+    }
+    .view-toggle button.active { background: #3f51b5; color: white; border-color: #3f51b5; }
+
+    .form-person {
+        background: #f5f7ff; padding: 20px; border-radius: 20px; margin-bottom: 20px;
+        border: 2px dashed #c5cae9; display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap: 12px; align-items: end;
+    }
+    .form-person .full-width { grid-column: 1 / -1; }
+    .form-title { font-size: 18px; font-weight: bold; color: #1a237e; margin-bottom: 4px; }
+    .form-person label { font-weight: bold; color: #283593; font-size: 12.5px; display: block; margin-bottom: 4px; }
+    .form-person input, .form-person select, .form-person textarea {
+        padding: 10px 14px; border-radius: 12px; border: 2px solid #e8eaf6;
+        font-size: 14px; width: 100%; transition: 0.3s; background: white;
+    }
+    .form-person input:focus, .form-person select:focus, .form-person textarea:focus {
+        border-color: #3f51b5; outline: none; box-shadow: 0 0 0 3px rgba(63, 81, 181, 0.2);
+    }
+    .form-person textarea { resize: vertical; min-height: 50px; }
+
+    .file-input-wrapper { position: relative; }
+    .file-input-wrapper input[type="file"] {
+        position: absolute; opacity: 0; width: 100%; height: 100%;
+        cursor: pointer; top: 0; right: 0;
+    }
+    .file-input-wrapper label {
+        background: #8e24aa; color: white; padding: 12px; border-radius: 12px;
+        text-align: center; cursor: pointer; transition: 0.3s; margin: 0; display: block;
+    }
+    .file-input-wrapper label:hover { background: #6a1b9a; }
+
+    .btn-add {
+        background: #43a047; color: white; border: none; padding: 14px 30px;
+        border-radius: 30px; font-weight: bold; font-size: 16px; cursor: pointer;
+        transition: 0.3s; width: 100%;
+    }
+    .btn-add:hover { background: #2e7d32; transform: scale(1.01); }
+
+    .tree-container {
+        background: #fafafa; padding: 20px; border-radius: 20px;
+        min-height: 400px; border: 1px solid #e0e0e0; overflow-x: auto;
+    }
+    .view-title { color: #3f51b5; margin: 10px 0 15px; font-size: 16px; }
+
+    .family-card {
+        background: white; border-radius: 16px; padding: 16px 20px; margin: 8px 0;
+        box-shadow: 0 3px 12px rgba(0,0,0,0.08); border-right: 5px solid #3f51b5; transition: 0.3s;
+    }
+    .family-card:hover { box-shadow: 0 6px 20px rgba(0,0,0,0.12); transform: translateX(-3px); }
+    .person-header { display: flex; align-items: center; gap: 15px; flex-wrap: wrap; }
+    .person-avatar {
+        width: 55px; height: 55px; border-radius: 50%; object-fit: cover;
+        border: 3px solid #3f51b5; background: #e8eaf6; flex-shrink: 0;
+    }
+    .person-avatar-placeholder {
+        width: 55px; height: 55px; border-radius: 50%; background: #e8eaf6;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 28px; border: 3px solid #3f51b5; flex-shrink: 0;
+    }
+    .person-name { font-size: 18px; font-weight: bold; color: #1a237e; }
+    .person-details {
+        color: #5c6bc0; font-size: 13px; display: flex; flex-wrap: wrap;
+        gap: 8px 10px; margin-top: 8px;
+    }
+    .person-details span { background: #f5f7ff; padding: 3px 12px; border-radius: 15px; }
+    .person-notes {
+        color: #555; font-size: 13px; margin-top: 8px; padding: 8px 14px;
+        background: #fff8e1; border-radius: 10px; border-right: 3px solid #ffb300;
+    }
+    .actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .actions button {
+        padding: 6px 15px; border: none; border-radius: 20px; font-size: 12px;
+        font-weight: bold; cursor: pointer; transition: 0.3s;
+    }
+    .btn-edit { background: #ffb300; color: #333; } .btn-edit:hover { background: #ff8f00; }
+    .btn-delete { background: #ef5350; color: white; } .btn-delete:hover { background: #c62828; }
+    .btn-child { background: #26a69a; color: white; } .btn-child:hover { background: #00796b; }
+
+    .children-container {
+        margin-right: 38px; padding-right: 18px; border-right: 3px solid #3f51b5; margin-top: 10px;
+    }
+    .children-container .child-label { color: #5c6bc0; font-weight: bold; font-size: 13px; margin-bottom: 8px; }
+    .spouse-badge {
+        background: #e8f5e9; color: #2e7d32; padding: 5px 14px; border-radius: 20px;
+        font-size: 13px; font-weight: bold; display: inline-block; margin-right: 40px; margin-top: 6px;
+    }
+    .empty-msg { text-align: center; color: #999; font-size: 20px; padding: 60px 0; }
+
+    .note {
+        background: #fff8e1; border-right: 5px solid #ffb300; padding: 15px 20px;
+        margin-top: 20px; border-radius: 12px; font-size: 13.5px; line-height: 1.9;
+    }
+    .note ul { margin: 8px 20px; }
+
+    .modal-overlay {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.55); z-index: 9999;
+        display: flex; align-items: center; justify-content: center; padding: 20px;
+    }
+    .modal-box {
+        background: white; border-radius: 22px; padding: 26px; max-width: 640px;
+        width: 100%; max-height: 90vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        animation: fadeIn .25s ease;
+    }
+    .modal-box h2 { color: #1a237e; margin-bottom: 16px; font-size: 21px; }
+    .edit-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 12px; }
+    .edit-grid .full-width { grid-column: 1 / -1; }
+    .edit-grid label { font-weight: bold; color: #283593; font-size: 12.5px; display: block; margin-bottom: 4px; }
+    .edit-grid input, .edit-grid select, .edit-grid textarea {
+        width: 100%; padding: 10px 12px; border-radius: 10px;
+        border: 2px solid #e0e0e0; font-size: 14px; background: #fff;
+    }
+    .edit-grid input:focus, .edit-grid select:focus, .edit-grid textarea:focus { border-color: #3f51b5; outline: none; }
+    .edit-grid textarea { min-height: 70px; resize: vertical; }
+    .actions-row { display: flex; gap: 10px; margin-top: 10px; }
+    .btn-save, .btn-cancel {
+        flex: 1; border: none; padding: 13px; border-radius: 30px;
+        font-weight: bold; cursor: pointer; font-size: 15px; color: white;
+    }
+    .btn-save { background: #43a047; } .btn-save:hover { background: #2e7d32; }
+    .btn-cancel { background: #e53935; } .btn-cancel:hover { background: #c62828; }
+
+    .toast {
+        position: fixed; bottom: 30px; left: 50%; transform: translate(-50%, 20px);
+        background: #323232; color: #fff; padding: 13px 26px; border-radius: 30px;
+        font-weight: bold; font-size: 14.5px; z-index: 100000; opacity: 0;
+        transition: .3s; pointer-events: none; max-width: 90vw; text-align: center;
+        box-shadow: 0 10px 30px rgba(0,0,0,.3);
+    }
+    .toast.show { opacity: 1; transform: translate(-50%, 0); }
+    .toast.err { background: #c62828; }
+    .toast.info { background: #1565c0; }
+
+    .about-overlay {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 99999;
+        display: none; align-items: center; justify-content: center; padding: 20px;
+    }
+    .about-overlay.show { display: flex; }
+    .about-modal {
+        background: white; border-radius: 30px; padding: 32px; max-width: 600px;
+        width: 100%; max-height: 90vh; overflow-y: auto;
+        box-shadow: 0 30px 80px rgba(0,0,0,0.4); animation: fadeIn 0.3s ease;
+    }
+    .about-modal h2 {
+        color: #1a237e; font-size: 25px; border-bottom: 3px solid #3f51b5;
+        padding-bottom: 14px; margin-bottom: 16px; text-align: center;
+    }
+    .about-modal .about-icon { font-size: 55px; text-align: center; display: block; margin-bottom: 8px; }
+    .about-modal .about-version {
+        background: #e8eaf6; padding: 5px 15px; border-radius: 30px;
+        font-size: 13px; color: #3f51b5; display: inline-block; margin-bottom: 15px;
+    }
+    .about-modal .about-section { margin: 14px 0; }
+    .about-modal .about-section h3 { color: #283593; font-size: 17px; margin-bottom: 6px; }
+    .about-modal .about-section p,
+    .about-modal .about-section li { color: #555; font-size: 14.5px; line-height: 1.9; }
+    .about-modal .about-section ul { padding-right: 20px; }
+    .about-modal .about-footer {
+        border-top: 1px solid #e8eaf6; padding-top: 16px; margin-top: 18px;
+        text-align: center; color: #888; font-size: 14px;
+    }
+    .about-modal .close-about-btn {
+        background: #3f51b5; color: white; border: none; padding: 12px 35px; border-radius: 30px;
+        font-weight: bold; font-size: 16px; cursor: pointer; transition: 0.3s;
+        margin-top: 15px; width: 100%;
+    }
+    .about-modal .close-about-btn:hover { background: #1a237e; }
+    .about-modal .highlight {
+        background: #e8f5e9; color: #1b5e20; padding: 2px 10px;
+        border-radius: 15px; font-weight: bold;
+    }
+    .about-modal .contact-info {
+        display: flex; flex-direction: column; gap: 10px; margin-top: 10px;
+    }
+    .about-modal .contact-info a {
+        color: white; text-decoration: none; font-weight: bold; transition: 0.3s;
+        display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px;
+        border-radius: 12px; justify-content: center; font-size: 13.5px;
+    }
+    .about-modal .contact-info .whatsapp-btn { background: #25D366; }
+    .about-modal .contact-info .whatsapp-btn:hover { background: #1da851; }
+    .about-modal .contact-info .email-btn { background: #ea4335; }
+    .about-modal .contact-info .email-btn:hover { background: #c5221f; }
+    .about-modal .contact-info .phone-btn { background: #34a853; }
+    .about-modal .contact-info .phone-btn:hover { background: #2d8f47; }
+
+    @media print {
+        .toolbar, .form-person, .search-box, .view-toggle, .note, .about-overlay, .login-overlay { display: none !important; }
+        body { background: white; padding: 0; }
+        .container { box-shadow: none; padding: 0; }
+        .family-card { break-inside: avoid; box-shadow: none; border: 1px solid #ddd; }
+    }
+    @media (max-width: 700px) {
+        .form-person { grid-template-columns: 1fr; }
+        .family-card .person-header { flex-direction: column; text-align: center; }
+        .children-container { margin-right: 12px; padding-right: 10px; }
+        .spouse-badge { margin-right: 0; }
+        .about-modal { padding: 22px; }
+        h1 { font-size: 22px; }
+        .login-box { padding: 30px 22px; }
+    }
+</style>
+</head>
+<body>
+
+<!-- ===== شاشة تسجيل الدخول ===== -->
+<div class="login-overlay" id="loginOverlay">
+    <div class="login-box">
+        <div class="login-icon">🔐</div>
+        <h2>شجرة العائلة</h2>
+        <p class="login-subtitle" id="loginSubtitle">أدخل رمز الدخول للوصول إلى بياناتك</p>
+        <div class="login-error" id="loginError"></div>
+        <div class="login-input-wrap">
+            <input type="password" id="loginPassword" placeholder="● ● ● ● ● ●" autocomplete="off"
+                   onkeydown="if(event.key==='Enter') doLogin()" />
+            <button type="button" class="toggle-pw" onclick="togglePwVisibility()" id="togglePwBtn">👁️</button>
+        </div>
+        <div class="remember-row" onclick="toggleRemember()">
+            <input type="checkbox" id="rememberMe" checked onclick="event.stopPropagation();">
+            <label for="rememberMe">🔐 تذكرني على هذا الجهاز</label>
+        </div>
+        <button class="login-btn" id="loginBtn" onclick="doLogin()">🔓 دخول</button>
+        <p class="login-hint" id="loginHint">
+            <strong>نفس الرمز = نفس البيانات</strong><br>
+            استخدم نفس الرمز على الكومبيوتر والموبايل لترى نفس الشجرة.
+        </p>
+    </div>
+</div>
+
+<!-- ===== التطبيق ===== -->
+<div class="container" id="app" style="display:none;">
+    <h1>🌳 شجرة العائلة المتقدمة</h1>
+    <p class="subtitle">🔒 مشفّرة + ☁️ مزامنة سحابية فورية بين جميع أجهزتك</p>
+    <div class="toolbar">
+        <button class="btn-success" onclick="exportData()">📤 تصدير JSON</button>
+        <label class="btn-primary">📥 استيراد JSON<input type="file" accept=".json" onchange="importData(event)"></label>
+        <button class="btn-danger" onclick="clearAll()">🗑️ مسح الكل</button>
+        <button class="btn-warning" onclick="printTree()">🖨️ طباعة</button>
+        <button class="btn-about" onclick="showAbout()">ℹ️ عن التطبيق</button>
+        <button class="btn-logout" onclick="logout()">🔒 خروج</button>
+        <span class="badge" id="counter">👥 0 فرد</span>
+        <span class="badge save-badge" id="saveBadge">💾 حفظ</span>
+        <span class="badge sync-badge" id="syncBadge">☁️ جاهز</span>
+    </div>
+
+    <div class="stats">
+        <div class="stat-item">👨 الذكور: <span id="maleCount">0</span></div>
+        <div class="stat-item">👩 الإناث: <span id="femaleCount">0</span></div>
+        <div class="stat-item">📅 الأجيال: <span id="generationCount">0</span></div>
+        <div class="stat-item">🌱 الجذور: <span id="rootsCount">0</span></div>
+    </div>
+
+    <div class="search-box">
+        <input type="text" id="searchInput" placeholder="🔍 ابحث بالاسم أو الملاحظات أو مكان الميلاد..." oninput="searchPerson()">
+        <button onclick="searchPerson()">بحث</button>
+        <button class="btn-teal" onclick="clearSearch()">❌ إلغاء</button>
+    </div>
+
+    <div class="view-toggle">
+        <button id="btnTree" class="active" onclick="setView('tree')">🌳 عرض الشجرة</button>
+        <button id="btnList" onclick="setView('list')">📋 عرض القائمة (كل الأسماء)</button>
+    </div>
+
+    <div class="form-person" id="addForm">
+        <div class="full-width form-title">➕ إضافة فرد جديد</div>
+        <div>
+            <label>👤 الاسم الكامل *</label>
+            <input type="text" id="personName" placeholder="مثال: أحمد محمد">
+        </div>
+        <div>
+            <label>⚥ الجنس</label>
+            <select id="personGender">
+                <option value="ذكر">👨 ذكر</option>
+                <option value="أنثى">👩 أنثى</option>
+            </select>
+        </div>
+        <div>
+            <label>👨 الأب (اختر من القائمة)</label>
+            <select id="personFather"></select>
+        </div>
+        <div>
+            <label>👩 الأم (اختر من القائمة)</label>
+            <select id="personMother"></select>
+        </div>
+        <div>
+            <label>💑 الزوج/الزوجة (اختر من القائمة)</label>
+            <select id="personSpouse"></select>
+        </div>
+        <div>
+            <label>📅 تاريخ الميلاد</label>
+            <input type="date" id="personBirth">
+        </div>
+        <div>
+            <label>⚰️ تاريخ الوفاة</label>
+            <input type="date" id="personDeath">
+        </div>
+        <div>
+            <label>📍 مكان الميلاد</label>
+            <input type="text" id="personBirthPlace" placeholder="المدينة / البلد">
+        </div>
+        <div class="full-width">
+            <label>📝 ملاحظات (المهنة، اللقب، إلخ)</label>
+            <textarea id="personNotes" placeholder="مثال: طبيب، مهندس، حفيد..."></textarea>
+        </div>
+        <div class="full-width">
+            <div class="file-input-wrapper">
+                <label id="imageLabel">📸 اختر صورة</label>
+                <input type="file" id="personImage" accept="image/*">
+            </div>
+        </div>
+        <div class="full-width">
+            <button class="btn-add" onclick="addPerson()">➕ إضافة فرد</button>
+        </div>
+    </div>
+
+    <div class="tree-container" id="treeDisplay">
+        <div class="empty-msg">✨ لا يوجد أفراد. أضف عائلتك الآن!</div>
+    </div>
+
+    <div class="note">
+        <strong>📌 ملاحظات مهمة:</strong>
+        <ul>
+            <li>🔐 <strong>تذكرني:</strong> عند تفعيله، يدخل تلقائياً في المرات القادمة.</li>
+            <li>🔒 <strong>خروج:</strong> يمسح الرمز المحفوظ ويعيدك لشاشة الدخول.</li>
+            <li>☁️ <strong>المزامنة تعمل تلقائياً</strong> — لا حاجة لإعدادات.</li>
+            <li>🔑 <strong>نفس الرمز على كل الأجهزة = نفس البيانات</strong> (تحديث كل 5 ثوانٍ).</li>
+            <li>🔒 البيانات مشفّرة AES-256 قبل رفعها للسحابة.</li>
+            <li>👨 <strong>الأب والأم والزوج/الزوجة</strong> من قوائم منسدلة — الأسماء المكررة مسموحة.</li>
+            <li>⚠️ <strong>مهم:</strong> صدّر نسخة JSON احتياطية بانتظام.</li>
+        </ul>
+    </div>
+</div>
+
+<!-- ===== نافذة "عن التطبيق" ===== -->
+<div class="about-overlay" id="aboutOverlay">
+    <div class="about-modal">
+        <span class="about-icon">🌳</span>
+        <h2>عن شجرة العائلة</h2>
+        <div style="text-align:center;">
+            <span class="about-version">الإصدار 6.0 — مزامنة + تذكرني</span>
+        </div>
+        <div class="about-section">
+            <h3>📖 عن التطبيق</h3>
+            <p>
+                تطبيق لإنشاء وإدارة <strong>شجرة العائلة</strong> بسهولة، محمي برمز دخول وتشفير AES-256،
+                مع <strong>مزامنة سحابية فورية</strong> بين جميع أجهزتك.
+            </p>
+        </div>
+        <div class="about-section">
+            <h3>✨ الميزات</h3>
+            <ul>
+                <li>🔐 <strong>تذكرني:</strong> دخول تلقائي بدون كتابة الرمز كل مرة</li>
+                <li>☁️ مزامنة تلقائية بين الأجهزة خلال 5 ثوانٍ</li>
+                <li>🔒 تشفير كامل AES-256</li>
+                <li>👥 نفس الرمز = نفس البيانات على كل الأجهزة</li>
+                <li>💾 يعمل بدون إنترنت، ويرفع عند الاتصال</li>
+                <li>🖼️ إضافة صور لكل فرد</li>
+                <li>📅 تواريخ الميلاد والوفاة + حساب العمر</li>
+                <li>👨 قوائم منسدلة للأب والأم والزوج/الزوجة</li>
+                <li>✅ السماح بالأسماء المكررة</li>
+                <li>📋 عرض الشجرة أو قائمة الأسماء</li>
+                <li>📤 تصدير واستيراد JSON</li>
+                <li>🖨️ طباعة الشجرة</li>
+                <li>📊 إحصائيات فورية</li>
+                <li>✅ يتسع لأكثر من <span class="highlight">500 اسم</span></li>
+            </ul>
+        </div>
+        <div class="about-section">
+            <h3>👨‍💻 المطور</h3>
+            <p>
+                تم تطوير هذا التطبيق بواسطة <strong>حسان مارديني</strong>.<br>
+                صُمّم ليكون سهل الاستخدام، مناسباً للعائلات العربية.
+            </p>
+        </div>
+        <div class="about-section">
+            <h3>💰 الترخيص</h3>
+            <p>🆓 هذا البرنامج <strong>مجاني بالكامل</strong>.</p>
+        </div>
+        <div class="about-section">
+            <h3>📅 تاريخ الإنجاز</h3>
+            <p>✅ تم تطوير هذا التطبيق بتاريخ<br>
+            <strong style="font-size:20px;color:#1a237e;">2 / 8 / 2026</strong></p>
+        </div>
+        <div class="about-section">
+            <h3>📞 تواصل معنا</h3>
+            <div class="contact-info">
+                <a href="mailto:hassanmardinli21@gmail.com" class="email-btn">📧 hassanmardinli21@gmail.com</a>
+                <a href="tel:+905060917640" class="phone-btn">📱 00905060917640</a>
+                <a href="https://wa.me/905060917640" target="_blank" class="whatsapp-btn">💬 واتساب: 00905060917640</a>
+            </div>
+        </div>
+        <div class="about-footer">© 2026 حسان مارديني - جميع الحقوق محفوظة</div>
+        <button class="close-about-btn" onclick="closeAbout()">❌ إغلاق</button>
+    </div>
+</div>
+
+<script>
+const DEFAULT_FIREBASE_URL = 'https://family-tree-5d9de-default-rtdb.europe-west1.firebasedatabase.app';
+const VAULTS_KEY = 'familyTree_vaults_v6';
+const SAVED_PW_KEY = 'familyTree_saved_pw';
+
+let familyTree = [];
+let idCounter = 1;
+let selectedImage = null;
+let searchTerm = '';
+let viewMode = 'tree';
+let currentPassword = null;
+let currentKey = null;
+let currentSalt = null;
+let currentPasswordHash = null;
+let firebaseURL = DEFAULT_FIREBASE_URL;
+let lastSyncedAt = 0;
+let syncTimer = null;
+let isSyncing = false;
+
+function esc(s) {
+    return String(s == null ? '' : s)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
+}
+const getById = id => familyTree.find(p => p.id === Number(id)) || null;
+function mainParentId(p) {
+    if (p.fatherId && getById(p.fatherId)) return p.fatherId;
+    if (p.motherId && getById(p.motherId)) return p.motherId;
+    return null;
+}
+function childrenOf(id) { return familyTree.filter(p => mainParentId(p) === id); }
+function nextInChain(p) {
+    if (p.fatherId && getById(p.fatherId)) return getById(p.fatherId);
+    if (p.motherId && getById(p.motherId)) return getById(p.motherId);
+    return null;
+}
+function createsCycle(personId, parentId) {
+    let cur = getById(parentId); const seen = new Set();
+    while (cur) {
+        if (cur.id === personId) return true;
+        if (seen.has(cur.id)) return false;
+        seen.add(cur.id); cur = nextInChain(cur);
+    }
+    return false;
+}
+function computeAge(p) {
+    if (!p.birth) return '';
+    const b = new Date(p.birth); if (isNaN(b)) return '';
+    const end = p.death ? new Date(p.death) : new Date(); if (isNaN(end)) return '';
+    let years = end.getFullYear() - b.getFullYear();
+    const m = end.getMonth() - b.getMonth();
+    if (m < 0 || (m === 0 && end.getDate() < b.getDate())) years--;
+    if (years < 0 || years > 130) return '';
+    return p.death ? `🕯️ العمر عند الوفاة: ${years} سنة` : `🎂 العمر: ${years} سنة`;
+}
+function getColor(level) {
+    const colors = ['#3f51b5', '#43a047', '#fb8c00', '#8e24aa', '#00897b', '#e53935', '#1a237e'];
+    return colors[level % colors.length];
+}
+function valOrNull(elId) {
+    const v = document.getElementById(elId).value;
+    return v ? Number(v) : null;
+}
+function toast(msg, type = 'ok') {
+    const t = document.createElement('div');
+    t.className = 'toast ' + (type === 'ok' ? '' : type);
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(() => t.classList.add('show'), 10);
+    setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 350); }, 2600);
+}
+function buf2b64(buf) {
+    let binary = '';
+    const bytes = new Uint8Array(buf);
+    const chunk = 0x8000;
+    for (let i = 0; i < bytes.length; i += chunk) {
+        binary += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+    }
+    return btoa(binary);
+}
+function b642buf(b64) { return Uint8Array.from(atob(b64), c => c.charCodeAt(0)); }
+async function hashPassword(pw) {
+    const enc = new TextEncoder();
+    const buf = await crypto.subtle.digest('SHA-256', enc.encode('FTSALT::' + pw + '::FTSALT'));
+    return buf2b64(buf);
+}
+async function deriveKey(password, salt) {
+    const enc = new TextEncoder();
+    const keyMaterial = await crypto.subtle.importKey('raw', enc.encode(password), 'PBKDF2', false, ['deriveKey']);
+    return crypto.subtle.deriveKey(
+        { name: 'PBKDF2', salt, iterations: 150000, hash: 'SHA-256' },
+        keyMaterial,
+        { name: 'AES-GCM', length: 256 },
+        false, ['encrypt', 'decrypt']
+    );
+}
+async function encryptVault(dataObj, key, salt) {
+    const enc = new TextEncoder();
+    const iv = crypto.getRandomValues(new Uint8Array(12));
+    const ct = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, enc.encode(JSON.stringify(dataObj)));
+    return { salt: buf2b64(salt), iv: buf2b64(iv), ciphertext: buf2b64(ct) };
+}
+async function decryptVault(vault, key) {
+    const dec = new TextDecoder();
+    const iv = b642buf(vault.iv);
+    const ct = b642buf(vault.ciphertext);
+    const plain = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, ct);
+    return JSON.parse(dec.decode(plain));
+}
+function getVaults() {
+    try { return JSON.parse(localStorage.getItem(VAULTS_KEY) || '{}'); }
+    catch (e) { return {}; }
+}
+function setVaults(v) { localStorage.setItem(VAULTS_KEY, JSON.stringify(v)); }
+function fdbURL(path) {
+    if (!firebaseURL) return null;
+    const base = firebaseURL.replace(/\/$/, '');
+    return base + '/' + path + '.json';
+}
+async function fdbGet(path) {
+    if (!firebaseURL) return null;
+    const url = fdbURL(path) + '?t=' + Date.now();
+    const r = await fetch(url);
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+}
+async function fdbPut(path, data) {
+    if (!firebaseURL) return;
+    const r = await fetch(fdbURL(path), {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+    });
+    if (!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+}
+let saveTimer = null;
+let savePending = false;
+async function saveToStorage(silent) {
+    if (!currentKey || !currentSalt || !currentPasswordHash) return;
+    if (savePending) return;
+    savePending = true;
+    try {
+        const updatedAt = Date.now();
+        const vaultData = await encryptVault({ people: familyTree, idCounter }, currentKey, currentSalt);
+        vaultData.updatedAt = updatedAt;
+        const vaults = getVaults();
+        vaults[currentPasswordHash] = vaultData;
+        setVaults(vaults);
+        if (firebaseURL) {
+            setSyncBadge('syncing', '☁️ جاري الرفع...');
+            try {
+                await fdbPut('rooms/' + currentPasswordHash, vaultData);
+                lastSyncedAt = updatedAt;
+                setSyncBadge('on', '☁️ متزامن');
+            } catch (e) {
+                setSyncBadge('off', '☁️ فشل الرفع');
+                console.warn('Sync upload failed:', e);
+            }
+        }
+        if (!silent) {
+            const b = document.getElementById('saveBadge');
+            if (b) {
+                b.classList.add('show');
+                clearTimeout(saveTimer);
+                saveTimer = setTimeout(() => b.classList.remove('show'), 1200);
+            }
+        }
+    } catch (e) {
+        console.warn('خطأ في الحفظ:', e);
+        if (e && (e.name === 'QuotaExceededError' || e.code === 22)) {
+            toast('⚠️ مساحة التخزين ممتلئة!', 'err');
+        }
+    } finally { savePending = false; }
+}
+function setSyncBadge(state, text) {
+    const b = document.getElementById('syncBadge');
+    if (!b) return;
+    b.textContent = text;
+    b.classList.remove('on', 'off', 'syncing');
+    if (state) b.classList.add(state);
+}
+function migrateOldFormat() {
+    const needsMigration = familyTree.some(p => p.fatherId === undefined && (p.father !== undefined || p.mother !== undefined || p.spouse !== undefined));
+    if (needsMigration) {
+        const byName = {};
+        familyTree.forEach(p => { if (!(p.name in byName)) byName[p.name] = p.id; });
+        familyTree.forEach(p => {
+            p.fatherId = (p.father && byName[p.father]) ? byName[p.father] : null;
+            p.motherId = (p.mother && byName[p.mother]) ? byName[p.mother] : null;
+            p.spouseId = (p.spouse && byName[p.spouse]) ? byName[p.spouse] : null;
+            delete p.father; delete p.mother; delete p.spouse;
+        });
+    }
+    let nextId = 1; const seen = new Set();
+    familyTree.forEach(p => {
+        let pid = Number(p.id);
+        if (!pid || seen.has(pid)) { while (seen.has(nextId)) nextId++; pid = nextId; }
+        seen.add(pid); p.id = pid;
+    });
+    familyTree.forEach(p => {
+        ['fatherId', 'motherId', 'spouseId'].forEach(k => {
+            if (p[k] === undefined || p[k] === null || p[k] === '') p[k] = null;
+            else p[k] = Number(p[k]);
+        });
+        if (!p.gender) p.gender = 'ذكر';
+        ['name', 'birth', 'death', 'birthPlace', 'notes', 'image'].forEach(k => {
+            if (p[k] === undefined || p[k] === null) p[k] = '';
+        });
+    });
+    const maxId = familyTree.reduce((m, p) => Math.max(m, p.id), 0);
+    idCounter = Math.max(idCounter, maxId + 1);
+}
+function linkSpouse(personId, spouseId) {
+    const p = getById(personId); if (!p) return;
+    if (p.spouseId && p.spouseId !== spouseId) {
+        const old = getById(p.spouseId);
+        if (old && old.spouseId === personId) old.spouseId = null;
+    }
+    p.spouseId = spouseId || null;
+    if (spouseId) {
+        const s = getById(spouseId);
+        if (s && s.id !== personId) {
+            if (s.spouseId && s.spouseId !== personId) {
+                const old2 = getById(s.spouseId);
+                if (old2 && old2.spouseId === spouseId) old2.spouseId = null;
+            }
+            s.spouseId = personId;
+        }
+    }
+}
+function optionsHTML(selectedId, emptyLabel, excludeId) {
+    const sorted = [...familyTree].sort((a, b) => a.name.localeCompare(b.name, 'ar'));
+    let html = `<option value="">${esc(emptyLabel)}</option>`;
+    sorted.forEach(p => {
+        if (excludeId && p.id === excludeId) return;
+        const f = p.fatherId ? getById(p.fatherId) : null;
+        const label = `${p.name}${f ? ' — ابن/ة ' + f.name : ' — (جذر)'}  (#${p.id})`;
+        html += `<option value="${p.id}" ${Number(selectedId) === p.id ? 'selected' : ''}>${esc(label)}</option>`;
+    });
+    return html;
+}
+function populateSelects() {
+    const fEl = document.getElementById('personFather');
+    const mEl = document.getElementById('personMother');
+    const sEl = document.getElementById('personSpouse');
+    if (!fEl || !mEl || !sEl) return;
+    fEl.innerHTML = optionsHTML(null, '— بدون (جذر) —', null);
+    mEl.innerHTML = optionsHTML(null, '— غير محددة —', null);
+    sEl.innerHTML = optionsHTML(null, '— لا يوجد —', null);
+}
+function addPerson() {
+    const name = document.getElementById('personName').value.trim();
+    if (!name) { toast('⚠️ الرجاء إدخال الاسم.', 'err'); document.getElementById('personName').focus(); return; }
+    const fatherId = valOrNull('personFather');
+    const motherId = valOrNull('personMother');
+    const spouseId = valOrNull('personSpouse');
+    const person = {
+        id: idCounter++, name, fatherId, motherId, spouseId: null,
+        gender: document.getElementById('personGender').value,
+        birth: document.getElementById('personBirth').value,
+        death: document.getElementById('personDeath').value,
+        birthPlace: document.getElementById('personBirthPlace').value.trim(),
+        notes: document.getElementById('personNotes').value.trim(),
+        image: selectedImage || ''
+    };
+    familyTree.push(person);
+    if (spouseId) linkSpouse(person.id, spouseId);
+    resetForm();
+    refreshAll();
+    toast(`✅ تمت إضافة "${name}"`);
+}
+function resetForm() {
+    ['personName','personBirth','personDeath','personBirthPlace','personNotes','personImage'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('personGender').value = 'ذكر';
+    selectedImage = null;
+    const label = document.getElementById('imageLabel');
+    label.textContent = '📸 اختر صورة';
+    label.style.background = '';
+    populateSelects();
+    document.getElementById('personName').focus();
+}
+function startAddChild(parentId) {
+    const parent = getById(parentId); if (!parent) return;
+    populateSelects();
+    if (parent.gender === 'أنثى') document.getElementById('personMother').value = String(parentId);
+    else document.getElementById('personFather').value = String(parentId);
+    document.getElementById('addForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
+    setTimeout(() => document.getElementById('personName').focus(), 350);
+    toast('👶 تم تحديد الوالد — أدخل اسم الابن/الابنة', 'info');
+}
+document.getElementById('personImage').addEventListener('change', function (e) {
+    const file = e.target.files[0]; if (!file) return;
+    if (file.size > 2.5 * 1024 * 1024) {
+        if (!confirm('حجم الصورة كبير. المتابعة؟')) { e.target.value = ''; return; }
+    }
+    const reader = new FileReader();
+    reader.onload = ev => {
+        selectedImage = ev.target.result;
+        const label = document.getElementById('imageLabel');
+        label.textContent = '✅ تم اختيار الصورة';
+        label.style.background = '#43a047';
+        setTimeout(() => { label.textContent = '📸 اختر صورة'; label.style.background = ''; }, 2000);
+    };
+    reader.readAsDataURL(file);
+});
+function getRoots() {
+    const roots = familyTree.filter(p => mainParentId(p) === null);
+    const shown = new Set(); const result = [];
+    roots.forEach(p => {
+        if (shown.has(p.id)) return;
+        result.push(p); shown.add(p.id);
+        if (p.spouseId) {
+            const s = getById(p.spouseId);
+            if (s && mainParentId(s) === null) shown.add(s.id);
+        }
+    });
+    return result;
+}
+function buildPersonCard(person, showActions = true) {
+    const avatarHTML = (person.image && person.image.startsWith('data:image'))
+        ? `<img class="person-avatar" src="${person.image}" alt="${esc(person.name)}">`
+        : `<div class="person-avatar-placeholder">${person.gender === 'أنثى' ? '👩' : '👨'}</div>`;
+    const father = person.fatherId ? getById(person.fatherId) : null;
+    const mother = person.motherId ? getById(person.motherId) : null;
+    const details = [];
+    if (father) details.push(`👨 الأب: ${esc(father.name)}`);
+    if (mother) details.push(`👩 الأم: ${esc(mother.name)}`);
+    if (person.birth) details.push(`📅 مولود: ${esc(person.birth)}`);
+    if (person.death) details.push(`⚰️ متوفى: ${esc(person.death)}`);
+    if (person.birthPlace) details.push(`📍 ${esc(person.birthPlace)}`);
+    const age = computeAge(person); if (age) details.push(age);
+    const detailsHTML = details.length ? `<div class="person-details">${details.map(d => `<span>${d}</span>`).join('')}</div>` : '';
+    const notesHTML = person.notes ? `<div class="person-notes">📝 ${esc(person.notes)}</div>` : '';
+    let actionsHTML = '';
+    if (showActions) {
+        actionsHTML = `<div class="actions">
+            <button class="btn-edit" onclick="editPerson(${person.id})">✏️ تعديل</button>
+            <button class="btn-child" onclick="startAddChild(${person.id})">➕ إضافة ابن/ابنة</button>
+            <button class="btn-delete" onclick="deletePerson(${person.id})">🗑️ حذف</button>
+        </div>`;
+    }
+    return `<div class="person-header">
+        ${avatarHTML}
+        <div>
+            <span class="person-name">${esc(person.name)}</span>
+            <span style="color:#888;font-size:14px;">${person.gender === 'أنثى' ? '👩' : '👨'}</span>
+            <span style="color:#bbb;font-size:12px;"> #${person.id}</span>
+        </div>
+    </div>${detailsHTML}${notesHTML}${actionsHTML}`;
+}
+function buildTree(person, level, visited) {
+    if (visited.has(person.id)) {
+        return `<div class="family-card" style="border-right-color:${getColor(level)};opacity:.65;">
+            <div class="person-header"><div class="person-avatar-placeholder">↩️</div>
+            <div><span class="person-name">${esc(person.name)}</span>
+            <span style="color:#888;font-size:13px;"> (ظاهر مسبقًا)</span></div></div></div>`;
+    }
+    visited.add(person.id);
+    const children = childrenOf(person.id);
+    const spouse = person.spouseId ? getById(person.spouseId) : null;
+    if (spouse && mainParentId(spouse) === null) visited.add(spouse.id);
+    let html = `<div class="family-card" style="border-right-color: ${getColor(level)};">`;
+    html += buildPersonCard(person, true);
+    if (spouse) {
+        const sImg = (spouse.image && spouse.image.startsWith('data:image'))
+            ? `<img src="${spouse.image}" style="width:30px;height:30px;border-radius:50%;object-fit:cover;vertical-align:middle;">` : '';
+        html += `<div class="spouse-badge">💑 الزوج/الزوجة: ${esc(spouse.name)} ${sImg}</div>`;
+    }
+    if (children.length > 0) {
+        html += `<div class="children-container"><div class="child-label">👶 الأبناء (${children.length})</div>`;
+        children.forEach(c => { html += buildTree(c, level + 1, visited); });
+        html += `</div>`;
+    }
+    html += `</div>`;
+    return html;
+}
+function renderTree() {
+    const container = document.getElementById('treeDisplay');
+    document.getElementById('counter').textContent = `👥 ${familyTree.length} فرد`;
+    if (familyTree.length === 0) {
+        container.innerHTML = `<div class="empty-msg">✨ لا يوجد أفراد. أضف عائلتك الآن!</div>`;
+        return;
+    }
+    const term = searchTerm.trim().toLowerCase(); let html = '';
+    if (term) {
+        const results = familyTree.filter(p =>
+            p.name.toLowerCase().includes(term) ||
+            (p.notes || '').toLowerCase().includes(term) ||
+            (p.birthPlace || '').toLowerCase().includes(term)
+        );
+        if (results.length === 0) html = `<div class="empty-msg">🔍 لا توجد نتائج للبحث عن "${esc(searchTerm)}"</div>`;
+        else {
+            html = `<h4 class="view-title">🔍 نتائج البحث عن "${esc(searchTerm)}" (${results.length})</h4>`;
+            results.forEach(p => { html += `<div class="family-card" style="border-right-color:#3f51b5;">${buildPersonCard(p, true)}</div>`; });
+        }
+    } else if (viewMode === 'list') {
+        const sorted = [...familyTree].sort((a, b) => a.name.localeCompare(b.name, 'ar'));
+        html = `<h4 class="view-title">📋 كل الأفراد (${sorted.length})</h4>`;
+        sorted.forEach(p => { html += `<div class="family-card" style="border-right-color:${getColor(0)};">${buildPersonCard(p, true)}</div>`; });
+    } else {
+        const visited = new Set();
+        const roots = getRoots();
+        html = `<h4 class="view-title">🌳 شجرة العائلة — عدد الجذور: ${roots.length}</h4>`;
+        roots.forEach(r => { html += buildTree(r, 0, visited); });
+        const remaining = familyTree.filter(p => !visited.has(p.id));
+        if (remaining.length) {
+            html += `<h4 class="view-title">📌 أفراد غير مرتبطين (${remaining.length})</h4>`;
+            remaining.forEach(p => { html += buildTree(p, 0, visited); });
+        }
+    }
+    container.innerHTML = html;
+}
+function setView(v) {
+    viewMode = v;
+    document.getElementById('btnTree').classList.toggle('active', v === 'tree');
+    document.getElementById('btnList').classList.toggle('active', v === 'list');
+    renderTree();
+}
+function searchPerson() { searchTerm = document.getElementById('searchInput').value; renderTree(); }
+function clearSearch() {
+    document.getElementById('searchInput').value = ''; searchTerm = ''; renderTree();
+}
+function updateStats() {
+    const males = familyTree.filter(p => p.gender === 'ذكر').length;
+    const females = familyTree.filter(p => p.gender === 'أنثى').length;
+    document.getElementById('maleCount').textContent = males;
+    document.getElementById('femaleCount').textContent = females;
+    const memo = new Map();
+    function depth(p, stack) {
+        if (stack.has(p.id)) return 0;
+        if (memo.has(p.id)) return memo.get(p.id);
+        stack.add(p.id); let d = 1;
+        childrenOf(p.id).forEach(k => { d = Math.max(d, 1 + depth(k, stack)); });
+        stack.delete(p.id); memo.set(p.id, d); return d;
+    }
+    let maxDepth = 0;
+    familyTree.forEach(p => { maxDepth = Math.max(maxDepth, depth(p, new Set())); });
+    document.getElementById('generationCount').textContent = maxDepth;
+    document.getElementById('rootsCount').textContent = getRoots().length;
+}
+function editPerson(id) {
+    const person = getById(id); if (!person) return;
+    const overlay = document.createElement('div');
+    overlay.className = 'modal-overlay';
+    overlay.innerHTML = `<div class="modal-box">
+        <h2>✏️ تعديل بيانات ${esc(person.name)}</h2>
+        <div class="edit-grid">
+            <div class="full-width"><label>👤 الاسم الكامل *</label><input type="text" id="editName" value="${esc(person.name)}"></div>
+            <div><label>⚥ الجنس</label><select id="editGender">
+                <option value="ذكر" ${person.gender === 'ذكر' ? 'selected' : ''}>👨 ذكر</option>
+                <option value="أنثى" ${person.gender === 'أنثى' ? 'selected' : ''}>👩 أنثى</option>
+            </select></div>
+            <div><label>👨 الأب</label><select id="editFather"></select></div>
+            <div><label>👩 الأم</label><select id="editMother"></select></div>
+            <div><label>💑 الزوج/الزوجة</label><select id="editSpouse"></select></div>
+            <div><label>📅 تاريخ الميلاد</label><input type="date" id="editBirth" value="${esc(person.birth)}"></div>
+            <div><label>⚰️ تاريخ الوفاة</label><input type="date" id="editDeath" value="${esc(person.death)}"></div>
+            <div><label>📍 مكان الميلاد</label><input type="text" id="editBirthPlace" value="${esc(person.birthPlace)}"></div>
+            <div class="full-width"><label>📝 ملاحظات</label><textarea id="editNotes">${esc(person.notes)}</textarea></div>
+            <div class="full-width actions-row">
+                <button class="btn-save" onclick="saveEdit(${person.id})">💾 حفظ</button>
+                <button class="btn-cancel" onclick="closeEdit()">❌ إلغاء</button>
+            </div>
+        </div></div>`;
+    document.body.appendChild(overlay);
+    document.body.style.overflow = 'hidden';
+    window._editOverlay = overlay;
+    overlay.addEventListener('click', e => { if (e.target === overlay) closeEdit(); });
+    document.getElementById('editFather').innerHTML = optionsHTML(person.fatherId, '— بدون (جذر) —', person.id);
+    document.getElementById('editMother').innerHTML = optionsHTML(person.motherId, '— غير محددة —', person.id);
+    document.getElementById('editSpouse').innerHTML = optionsHTML(person.spouseId, '— لا يوجد —', person.id);
+}
+function saveEdit(id) {
+    const person = getById(id); if (!person) return;
+    const newName = document.getElementById('editName').value.trim();
+    if (!newName) { toast('⚠️ الاسم مطلوب!', 'err'); return; }
+    const newFather = valOrNull('editFather');
+    const newMother = valOrNull('editMother');
+    const newSpouse = valOrNull('editSpouse');
+    if ((newFather && createsCycle(person.id, newFather)) || (newMother && createsCycle(person.id, newMother))) {
+        toast('⚠️ لا يمكن ربط الشخص بأحد أبنائه!', 'err'); return;
+    }
+    person.name = newName;
+    person.gender = document.getElementById('editGender').value;
+    person.fatherId = newFather;
+    person.motherId = newMother;
+    person.birth = document.getElementById('editBirth').value;
+    person.death = document.getElementById('editDeath').value;
+    person.birthPlace = document.getElementById('editBirthPlace').value.trim();
+    person.notes = document.getElementById('editNotes').value.trim();
+    linkSpouse(person.id, newSpouse);
+    closeEdit(); refreshAll(); toast('✅ تم حفظ التعديلات');
+}
+function closeEdit() {
+    if (window._editOverlay) { window._editOverlay.remove(); window._editOverlay = null; }
+    document.body.style.overflow = 'auto';
+}
+function deletePerson(id) {
+    const person = getById(id); if (!person) return;
+    const kids = childrenOf(id);
+    let msg = `هل أنت متأكد من حذف "${person.name}"؟`;
+    if (kids.length) msg += `\n\nسيصبح ${kids.length} من الأبناء في الجذر.`;
+    if (!confirm(msg)) return;
+    if (person.spouseId) {
+        const s = getById(person.spouseId);
+        if (s && s.spouseId === person.id) s.spouseId = null;
+    }
+    familyTree.forEach(p => {
+        if (p.fatherId === id) p.fatherId = null;
+        if (p.motherId === id) p.motherId = null;
+    });
+    familyTree = familyTree.filter(p => p.id !== id);
+    refreshAll(); toast('🗑️ تم حذف ' + person.name);
+}
+function exportData() {
+    if (familyTree.length === 0) { toast('لا توجد بيانات.', 'err'); return; }
+    const dataStr = JSON.stringify({ version: 6, people: familyTree, idCounter }, null, 2);
+    const blob = new Blob([dataStr], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `شجرة_العائلة_${new Date().toISOString().slice(0, 10)}.json`;
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    toast('📤 تم التصدير');
+}
+function importData(event) {
+    const file = event.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        try {
+            let imported = JSON.parse(e.target.result);
+            if (!Array.isArray(imported) && imported && Array.isArray(imported.people)) imported = imported.people;
+            if (!Array.isArray(imported)) { toast('❌ صيغة الملف غير صحيحة.', 'err'); return; }
+            if (familyTree.length > 0 && !confirm('سيتم استبدال البيانات الحالية. متابعة؟')) return;
+            familyTree = imported; idCounter = 1;
+            migrateOldFormat(); refreshAll();
+            toast(`✅ تم استيراد ${familyTree.length} فرد`);
+        } catch (err) { toast('❌ خطأ: ' + err.message, 'err'); }
+    };
+    reader.readAsText(file); event.target.value = '';
+}
+function clearAll() {
+    if (familyTree.length === 0) { toast('الشجرة فارغة.', 'err'); return; }
+    if (confirm('⚠️ مسح جميع البيانات؟ لا يمكن التراجع.')) {
+        familyTree = []; idCounter = 1;
+        document.getElementById('searchInput').value = ''; searchTerm = '';
+        refreshAll(); toast('🗑️ تم المسح');
+    }
+}
+function printTree() { window.print(); }
+function refreshAll() {
+    renderTree(); updateStats(); populateSelects();
+    saveToStorage();
+}
+function togglePwVisibility() {
+    const inp = document.getElementById('loginPassword');
+    const btn = document.getElementById('togglePwBtn');
+    if (inp.type === 'password') { inp.type = 'text'; btn.textContent = '🙈'; }
+    else { inp.type = 'password'; btn.textContent = '👁️'; }
+}
+function toggleRemember() {
+    const cb = document.getElementById('rememberMe');
+    cb.checked = !cb.checked;
+}
+function showLoginError(msg) {
+    const el = document.getElementById('loginError');
+    el.textContent = msg; el.classList.add('show');
+}
+function hideLoginError() { document.getElementById('loginError').classList.remove('show'); }
+async function doLogin() {
+    hideLoginError();
+    const pw = document.getElementById('loginPassword').value;
+    if (!pw || pw.length < 6) { showLoginError('⚠️ الرمز يجب أن يكون 6 أحرف على الأقل.'); return; }
+    const btn = document.getElementById('loginBtn');
+    btn.disabled = true; btn.textContent = '⏳ جاري التحقق...';
+    try {
+        if (!window.crypto || !window.crypto.subtle) {
+            showLoginError('⚠️ متصفحك لا يدعم التشفير.');
+            btn.disabled = false; btn.textContent = '🔓 دخول'; return;
+        }
+        const hash = await hashPassword(pw);
+        const vaults = getVaults();
+        firebaseURL = DEFAULT_FIREBASE_URL;
+        let vault = null;
+        if (firebaseURL) {
+            setSyncBadge('syncing', '☁️ جاري المزامنة...');
+            try {
+                const cloudVault = await fdbGet('rooms/' + hash);
+                if (cloudVault && cloudVault.ciphertext) vault = cloudVault;
+            } catch (e) { console.warn('Cloud read failed:', e); }
+        }
+        if (!vault && vaults[hash]) vault = vaults[hash];
+        if (vault) {
+            const salt = b642buf(vault.salt);
+            const key = await deriveKey(pw, salt);
+            try {
+                const data = await decryptVault(vault, key);
+                familyTree = Array.isArray(data.people) ? data.people : [];
+                idCounter = Number(data.idCounter) || 1;
+                currentPassword = pw; currentKey = key;
+                currentSalt = salt; currentPasswordHash = hash;
+                lastSyncedAt = vault.updatedAt || 0;
+                if (document.getElementById('rememberMe') && document.getElementById('rememberMe').checked) {
+                    localStorage.setItem(SAVED_PW_KEY, pw);
+                } else {
+                    localStorage.removeItem(SAVED_PW_KEY);
+                }
+                migrateOldFormat();
+                enterApp(true);
+                setSyncBadge('on', '☁️ متزامن');
+                return;
+            } catch (err) {
+                showLoginError('❌ رمز الدخول غير صحيح!');
+                btn.disabled = false; btn.textContent = '🔓 دخول';
+                setSyncBadge('off', '☁️ خطأ');
+                return;
+            }
+        }
+        const salt = crypto.getRandomValues(new Uint8Array(16));
+        const key = await deriveKey(pw, salt);
+        const emptyVault = await encryptVault({ people: [], idCounter: 1 }, key, salt);
+        emptyVault.updatedAt = Date.now();
+        vaults[hash] = emptyVault; setVaults(vaults);
+        try { await fdbPut('rooms/' + hash, emptyVault); } catch (e) { console.warn(e); }
+        familyTree = []; idCounter = 1;
+        currentPassword = pw; currentKey = key;
+        currentSalt = salt; currentPasswordHash = hash;
+        lastSyncedAt = emptyVault.updatedAt;
+        if (document.getElementById('rememberMe') && document.getElementById('rememberMe').checked) {
+            localStorage.setItem(SAVED_PW_KEY, pw);
+        } else {
+            localStorage.removeItem(SAVED_PW_KEY);
+        }
+        enterApp(false);
+        setSyncBadge('on', '☁️ متزامن');
+        toast('🎉 تم إنشاء مساحة جديدة', 'info');
+    } catch (e) {
+        console.error(e);
+        showLoginError('❌ خطأ: ' + e.message);
+        btn.disabled = false; btn.textContent = '🔓 دخول';
+    }
+}
+function enterApp(isReturning) {
+    document.getElementById('loginOverlay').style.display = 'none';
+    document.getElementById('app').style.display = 'block';
+    document.body.style.overflow = 'auto';
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginBtn').disabled = false;
+    document.getElementById('loginBtn').textContent = '🔓 دخول';
+    renderTree(); updateStats(); populateSelects();
+    if (firebaseURL) startSyncPolling(); else stopSyncPolling();
+    if (isReturning && familyTree.length > 0) {
+        toast(`📂 مرحبًا بعودتك — ${familyTree.length} فرد`, 'info');
+    }
+}
+async function logout() {
+    if (!confirm('تسجيل الخروج؟ البيانات ستبقى محفوظة برمزك.')) return;
+    try { await saveToStorage(true); } catch (e) {}
+    stopSyncPolling();
+    familyTree = []; idCounter = 1;
+    currentPassword = null; currentKey = null;
+    currentSalt = null; currentPasswordHash = null;
+    localStorage.removeItem(SAVED_PW_KEY);
+    document.getElementById('app').style.display = 'none';
+    document.getElementById('loginOverlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    document.getElementById('loginPassword').value = '';
+    document.getElementById('loginHint').innerHTML =
+        '<strong>نفس الرمز = نفس البيانات</strong><br>استخدم نفس الرمز على كل الأجهزة.';
+    toast('🔒 تم تسجيل الخروج');
+}
+function startSyncPolling() {
+    stopSyncPolling();
+    if (!firebaseURL || !currentPasswordHash) return;
+    setSyncBadge('on', '☁️ متزامن');
+    syncTimer = setInterval(pollCloud, 5000);
+}
+function stopSyncPolling() {
+    if (syncTimer) { clearInterval(syncTimer); syncTimer = null; }
+}
+async function pollCloud() {
+    if (!firebaseURL || !currentPasswordHash || !currentKey) return;
+    if (isSyncing) return;
+    if (savePending) return;
+    isSyncing = true;
+    try {
+        const cloudVault = await fdbGet('rooms/' + currentPasswordHash);
+        if (cloudVault && cloudVault.ciphertext && cloudVault.updatedAt && cloudVault.updatedAt > lastSyncedAt) {
+            try {
+                const data = await decryptVault(cloudVault, currentKey);
+                familyTree = Array.isArray(data.people) ? data.people : [];
+                idCounter = Number(data.idCounter) || 1;
+                lastSyncedAt = cloudVault.updatedAt;
+                migrateOldFormat();
+                const vaults = getVaults();
+                vaults[currentPasswordHash] = cloudVault;
+                setVaults(vaults);
+                renderTree(); updateStats(); populateSelects();
+                setSyncBadge('on', '☁️ تم التحديث');
+                toast('🔄 تم استلام تحديثات من جهاز آخر', 'info');
+                setTimeout(() => setSyncBadge('on', '☁️ متزامن'), 2500);
+            } catch (e) { console.warn('Decrypt cloud failed:', e); }
+        } else {
+            setSyncBadge('on', '☁️ متزامن');
+        }
+    } catch (e) {
+        setSyncBadge('off', '☁️ غير متصل');
+    } finally { isSyncing = false; }
+}
+function showAbout() {
+    document.getElementById('aboutOverlay').classList.add('show');
+    document.body.style.overflow = 'hidden';
+}
+function closeAbout() {
+    document.getElementById('aboutOverlay').classList.remove('show');
+    document.body.style.overflow = 'auto';
+}
+document.getElementById('aboutOverlay').addEventListener('click', function (e) {
+    if (e.target === this) closeAbout();
+});
+document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') { closeAbout(); closeEdit(); }
+});
+window.onload = function () {
+    document.getElementById('loginOverlay').style.display = 'flex';
+    document.body.style.overflow = 'hidden';
+    const vaults = getVaults();
+    const count = Object.keys(vaults).length;
+    if (count > 0) {
+        document.getElementById('loginHint').innerHTML =
+            `🔑 يوجد <strong>${count}</strong> مساحة محفوظة.<br>أدخل رمزك للوصول إلى بياناتك.`;
+        document.getElementById('loginSubtitle').textContent = 'مرحبًا بعودتك';
+    }
+    const savedPw = localStorage.getItem(SAVED_PW_KEY);
+    if (savedPw) {
+        const pwField = document.getElementById('loginPassword');
+        pwField.value = savedPw;
+        document.getElementById('rememberMe').checked = true;
+        document.getElementById('loginSubtitle').textContent = '⏳ جاري الدخول تلقائياً...';
+        setTimeout(() => doLogin(), 500);
+    } else {
+        setTimeout(() => document.getElementById('loginPassword').focus(), 300);
+    }
+};
+</script>
+</body>
+</html>
