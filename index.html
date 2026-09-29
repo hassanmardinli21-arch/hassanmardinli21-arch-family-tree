@@ -25,7 +25,6 @@
     }
     .subtitle { text-align: center; color: #5c6bc0; margin-bottom: 20px; font-size: 14px; }
 
-    /* ===== شاشة تسجيل الدخول ===== */
     .login-overlay {
         position: fixed; inset: 0;
         background: linear-gradient(135deg, #1a237e 0%, #3f51b5 50%, #8e24aa 100%);
@@ -82,7 +81,6 @@
     }
     .login-error.show { display: block; }
 
-    /* ===== Toolbar ===== */
     .toolbar {
         display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
         background: #f5f7ff; padding: 14px; border-radius: 20px;
@@ -142,7 +140,6 @@
     }
     .view-toggle button.active { background: #3f51b5; color: white; border-color: #3f51b5; }
 
-    /* ===== نموذج الإضافة ===== */
     .form-person {
         background: #f5f7ff; padding: 20px; border-radius: 20px; margin-bottom: 20px;
         border: 2px dashed #c5cae9; display: grid;
@@ -171,7 +168,6 @@
     }
     .file-input-wrapper label:hover { background: #6a1b9a; }
 
-    /* ===== قسم الأزواج ===== */
     .partners-edit-section {
         background: #e8f5e9; border-radius: 15px; padding: 15px;
         border: 2px dashed #a5d6a7;
@@ -180,9 +176,7 @@
         display: flex; align-items: center; justify-content: space-between;
         margin-bottom: 12px; flex-wrap: wrap; gap: 8px;
     }
-    .partners-edit-header h4 {
-        color: #1b5e20; font-size: 15px; margin: 0;
-    }
+    .partners-edit-header h4 { color: #1b5e20; font-size: 15px; margin: 0; }
     .btn-add-partner {
         background: #2e7d32; color: white; border: none; padding: 8px 18px;
         border-radius: 20px; font-weight: bold; cursor: pointer; font-size: 13px;
@@ -219,7 +213,6 @@
     }
     .btn-add:hover { background: #2e7d32; transform: scale(1.01); }
 
-    /* ===== الشجرة ===== */
     .tree-container {
         background: #fafafa; padding: 20px; border-radius: 20px;
         min-height: 400px; border: 1px solid #e0e0e0; overflow-x: auto;
@@ -264,7 +257,6 @@
     .btn-delete { background: #ef5350; color: white; } .btn-delete:hover { background: #c62828; }
     .btn-child { background: #26a69a; color: white; } .btn-child:hover { background: #00796b; }
 
-    /* ===== صفوف الأزواج في العرض ===== */
     .partners-display {
         margin-top: 10px; padding: 10px; background: #e8f5e9;
         border-radius: 12px; border-right: 4px solid #43a047;
@@ -296,10 +288,6 @@
         margin-right: 38px; padding-right: 18px; border-right: 3px solid #3f51b5; margin-top: 10px;
     }
     .children-container .child-label { color: #5c6bc0; font-weight: bold; font-size: 13px; margin-bottom: 8px; }
-    .spouse-badge {
-        background: #e8f5e9; color: #2e7d32; padding: 5px 14px; border-radius: 20px;
-        font-size: 13px; font-weight: bold; display: inline-block; margin-right: 40px; margin-top: 6px;
-    }
     .empty-msg { text-align: center; color: #999; font-size: 20px; padding: 60px 0; }
 
     .note {
@@ -380,15 +368,6 @@
     }
     .about-modal .close-about-btn:hover { background: #1a237e; }
     .about-modal .highlight { background: #e8f5e9; color: #1b5e20; padding: 2px 10px; border-radius: 15px; font-weight: bold; }
-    .about-modal .contact-info { display: flex; flex-direction: column; gap: 10px; margin-top: 10px; }
-    .about-modal .contact-info a {
-        color: white; text-decoration: none; font-weight: bold; transition: 0.3s;
-        display: inline-flex; align-items: center; gap: 8px; padding: 10px 16px;
-        border-radius: 12px; justify-content: center; font-size: 13.5px;
-    }
-    .about-modal .contact-info .whatsapp-btn { background: #25D366; }
-    .about-modal .contact-info .email-btn { background: #ea4335; }
-    .about-modal .contact-info .phone-btn { background: #34a853; }
 
     @media print {
         .toolbar, .form-person, .search-box, .view-toggle, .note, .about-overlay, .login-overlay { display: none !important; }
@@ -409,7 +388,6 @@
 </head>
 <body>
 
-<!-- ===== شاشة تسجيل الدخول ===== -->
 <div class="login-overlay" id="loginOverlay">
     <div class="login-box">
         <div class="login-icon">🔐</div>
@@ -433,7 +411,6 @@
     </div>
 </div>
 
-<!-- ===== التطبيق ===== -->
 <div class="container" id="app" style="display:none;">
     <h1>🌳 شجرة العائلة المتقدمة</h1>
     <p class="subtitle">🔒 مشفّرة + ☁️ مزامنة سحابية + 👥 دعم تعدد الأزواج</p>
@@ -469,7 +446,6 @@
         <button id="btnList" onclick="setView('list')">📋 عرض القائمة (كل الأسماء)</button>
     </div>
 
-    <!-- ===== نموذج الإضافة ===== -->
     <div class="form-person" id="addForm">
         <div class="full-width form-title">➕ إضافة فرد جديد</div>
 
@@ -515,7 +491,6 @@
             </div>
         </div>
 
-        <!-- ===== قسم الأزواج ===== -->
         <div class="full-width partners-edit-section">
             <div class="partners-edit-header">
                 <h4>💑 الأزواج / الزوجات (يمكن إضافة عدد غير محدود)</h4>
@@ -531,7 +506,6 @@
         </div>
     </div>
 
-    <!-- datalist للأسماء الموجودة -->
     <datalist id="existingPeopleList"></datalist>
 
     <div class="tree-container" id="treeDisplay">
@@ -551,13 +525,12 @@
     </div>
 </div>
 
-<!-- ===== عن التطبيق ===== -->
 <div class="about-overlay" id="aboutOverlay">
     <div class="about-modal">
         <span class="about-icon">🌳</span>
         <h2>عن شجرة العائلة</h2>
         <div style="text-align:center;">
-            <span class="about-version">الإصدار 7.0 — دعم تعدد الأزواج</span>
+            <span class="about-version">الإصدار 7.1 — دعم تعدد الأزواج</span>
         </div>
         <div class="about-section">
             <h3>✨ الميزات الجديدة</h3>
@@ -586,7 +559,7 @@ const VAULTS_KEY = 'familyTree_vaults_v7';
 const SAVED_PW_KEY = 'familyTree_saved_pw';
 
 let familyTree = [];
-let seqCounter = 1;      // الرقم التسلسلي التالي
+let seqCounter = 1;
 let idCounter = 1;
 let selectedImage = null;
 let searchTerm = '';
@@ -600,23 +573,19 @@ let lastSyncedAt = 0;
 let syncTimer = null;
 let isSyncing = false;
 
-/* =========================================================
-   أدوات مساعدة
-   ========================================================= */
 function esc(s) {
     return String(s == null ? '' : s)
         .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
-const getById = id => familyTree.find(p => p.id === id) || null;
-const getBySeq = seq => familyTree.find(p => p.seq === Number(seq)) || null;
+const getById = id => familyTree.find(p => String(p.id) === String(id)) || null;
 
 function mainParentId(p) {
     if (p.fatherId && getById(p.fatherId)) return p.fatherId;
     if (p.motherId && getById(p.motherId)) return p.motherId;
     return null;
 }
-function childrenOf(id) { return familyTree.filter(p => mainParentId(p) === id); }
+function childrenOf(id) { return familyTree.filter(p => String(mainParentId(p)) === String(id)); }
 function nextInChain(p) {
     if (p.fatherId && getById(p.fatherId)) return getById(p.fatherId);
     if (p.motherId && getById(p.motherId)) return getById(p.motherId);
@@ -625,7 +594,7 @@ function nextInChain(p) {
 function createsCycle(personId, parentId) {
     let cur = getById(parentId); const seen = new Set();
     while (cur) {
-        if (cur.id === personId) return true;
+        if (String(cur.id) === String(personId)) return true;
         if (seen.has(cur.id)) return false;
         seen.add(cur.id); cur = nextInChain(cur);
     }
@@ -658,9 +627,7 @@ function toast(msg, type = 'ok') {
     setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 350); }, 2600);
 }
 
-/* =========================================================
-   التشفير
-   ========================================================= */
+/* التشفير */
 function buf2b64(buf) {
     let binary = '';
     const bytes = new Uint8Array(buf);
@@ -671,7 +638,6 @@ function buf2b64(buf) {
     return btoa(binary);
 }
 function b642buf(b64) { return Uint8Array.from(atob(b64), c => c.charCodeAt(0)); }
-
 async function hashPassword(pw) {
     const enc = new TextEncoder();
     const buf = await crypto.subtle.digest('SHA-256', enc.encode('FTSALT::' + pw + '::FTSALT'));
@@ -701,9 +667,7 @@ async function decryptVault(vault, key) {
     return JSON.parse(dec.decode(plain));
 }
 
-/* =========================================================
-   localStorage + Firebase
-   ========================================================= */
+/* Storage + Firebase */
 function getVaults() {
     try { return JSON.parse(localStorage.getItem(VAULTS_KEY) || '{}'); }
     catch (e) { return {}; }
@@ -731,12 +695,9 @@ async function fdbPut(path, data) {
     return r.json();
 }
 
-/* =========================================================
-   الحفظ
-   ========================================================= */
+/* الحفظ */
 let saveTimer = null;
 let savePending = false;
-
 async function saveToStorage(silent) {
     if (!currentKey || !currentSalt || !currentPasswordHash) return;
     if (savePending) return;
@@ -773,7 +734,6 @@ async function saveToStorage(silent) {
         console.warn('خطأ في الحفظ:', e);
     } finally { savePending = false; }
 }
-
 function setSyncBadge(state, text) {
     const b = document.getElementById('syncBadge');
     if (!b) return;
@@ -782,61 +742,65 @@ function setSyncBadge(state, text) {
     if (state) b.classList.add(state);
 }
 
-/* =========================================================
-   ترحيل صيغة قديمة (v6 → v7)
-   ========================================================= */
+/* الترحيل */
 function migrateOldFormat() {
-    // ترتيب الأفراد: من الأقدم إلى الأحدث
+    // 1) تطبيع كل المُعرّفات إلى نصوص بصيغة pN
+    const idMap = new Map();
     familyTree.forEach((p, i) => {
-        // إضافة رقم تسلسلي إذا لم يكن موجوداً
-        if (p.seq === undefined || p.seq === null) {
-            p.seq = i + 1;
+        const oldId = p.id;
+        let newId;
+        if (typeof oldId === 'string' && /^p\d+$/.test(oldId)) {
+            newId = oldId;
+        } else if (oldId != null && oldId !== '') {
+            const num = String(oldId).replace(/\D/g, '');
+            newId = 'p' + (num || (i + 1));
+        } else {
+            newId = 'p' + (i + 1);
         }
-        // تحويل الحقول القديمة
-        if (p.father && p.fatherId === undefined) {
-            const f = familyTree.find(x => x.name === p.father);
-            p.fatherId = f ? f.id : null;
-        }
-        if (p.mother && p.motherId === undefined) {
-            const m = familyTree.find(x => x.name === p.mother);
-            p.motherId = m ? m.id : null;
-        }
-        if (p.spouse && !p.partners) {
-            p.partners = [{ name: p.spouse, year: '', status: 'متزوج' }];
-        }
-        delete p.father; delete p.mother; delete p.spouse; delete p.spouseId;
-        // ضمان وجود partners كمصفوفة
+        idMap.set(String(oldId), newId);
+        p.id = newId;
+    });
+
+    // 2) تحديث المراجع
+    familyTree.forEach(p => {
+        if (p.fatherId != null && p.fatherId !== '') {
+            p.fatherId = idMap.get(String(p.fatherId)) || null;
+        } else { p.fatherId = null; }
+        if (p.motherId != null && p.motherId !== '') {
+            p.motherId = idMap.get(String(p.motherId)) || null;
+        } else { p.motherId = null; }
+    });
+
+    // 3) ضمان وجود seq
+    familyTree.forEach((p, i) => {
+        if (p.seq === undefined || p.seq === null || isNaN(p.seq)) p.seq = i + 1;
+    });
+
+    // 4) ضمان وجود partners والحقول الأساسية
+    familyTree.forEach(p => {
         if (!Array.isArray(p.partners)) p.partners = [];
-        // ضمان الحقول الأساسية
         if (!p.gender) p.gender = 'ذكر';
         ['name','birth','death','birthPlace','notes','image'].forEach(k => {
             if (p[k] === undefined || p[k] === null) p[k] = '';
         });
-        if (p.fatherId === undefined) p.fatherId = null;
-        if (p.motherId === undefined) p.motherId = null;
     });
 
-    // إعادة ترقيم متسلسل
-    familyTree.sort((a, b) => a.seq - b.seq);
-    familyTree.forEach((p, i) => { p.seq = i + 1; });
-    seqCounter = familyTree.length + 1;
-
-    // إعادة ترقيم IDs إن لزم
-    const maxId = familyTree.reduce((m, p) => {
-        const n = Number(String(p.id).replace(/\D/g, '')) || 0;
-        return Math.max(m, n);
-    }, 0);
-    idCounter = maxId + 1;
+    // 5) إعادة ضبط العدادات
+    const maxSeq = familyTree.reduce((m, p) => Math.max(m, Number(p.seq) || 0), 0);
+    seqCounter = maxSeq + 1;
+    let maxIdNum = 0;
+    familyTree.forEach(p => {
+        const match = String(p.id).match(/\d+/);
+        if (match) maxIdNum = Math.max(maxIdNum, parseInt(match[0]));
+    });
+    idCounter = maxIdNum + 1;
 }
 
-/* =========================================================
-   نموذج الأزواج
-   ========================================================= */
+/* الأزواج */
 function addPartnerRow() {
     const container = document.getElementById('partnersList');
     const empty = container.querySelector('.partners-empty');
     if (empty) empty.remove();
-
     const row = document.createElement('div');
     row.className = 'partner-edit-row';
     row.innerHTML = `
@@ -853,7 +817,6 @@ function addPartnerRow() {
     row.querySelector('.partner-name').focus();
     updatePeopleDatalist();
 }
-
 function removePartnerRow(btn) {
     btn.parentElement.remove();
     const container = document.getElementById('partnersList');
@@ -861,7 +824,6 @@ function removePartnerRow(btn) {
         container.innerHTML = `<div class="partners-empty">لا توجد أزواج/زوجات — اضغط "+ إضافة زوج/زوجة"</div>`;
     }
 }
-
 function getPartnersFromForm() {
     const rows = document.querySelectorAll('#partnersList .partner-edit-row');
     const partners = [];
@@ -869,21 +831,16 @@ function getPartnersFromForm() {
         const name = row.querySelector('.partner-name').value.trim();
         const year = row.querySelector('.partner-year').value.trim();
         const status = row.querySelector('.partner-status').value;
-        if (name) {
-            partners.push({ name, year, status });
-        }
+        if (name) partners.push({ name, year, status });
     });
     return partners;
 }
-
 function clearPartnersForm() {
     document.getElementById('partnersList').innerHTML =
         `<div class="partners-empty">لا توجد أزواج/زوجات — اضغط "+ إضافة زوج/زوجة"</div>`;
 }
 
-/* =========================================================
-   قائمة الأسماء الموجودة (datalist) + خيارات القوائم المنسدلة
-   ========================================================= */
+/* القوائم */
 function updatePeopleDatalist() {
     const dl = document.getElementById('existingPeopleList');
     if (!dl) return;
@@ -892,20 +849,17 @@ function updatePeopleDatalist() {
         `<option value="${esc(p.name)}">${p.seq} - ${esc(p.name)}</option>`
     ).join('');
 }
-
 function optionsHTML(selectedId, emptyLabel, excludeId) {
-    // ترتيب حسب الرقم التسلسلي
     const sorted = [...familyTree].sort((a, b) => a.seq - b.seq);
     let html = `<option value="">${esc(emptyLabel)}</option>`;
     sorted.forEach(p => {
-        if (excludeId && p.id === excludeId) return;
+        if (excludeId && String(p.id) === String(excludeId)) return;
         const f = p.fatherId ? getById(p.fatherId) : null;
         const label = `${p.seq} - ${p.name}${f ? ' (ابن ' + f.name + ')' : ''}`;
-        html += `<option value="${p.id}" ${selectedId === p.id ? 'selected' : ''}>${esc(label)}</option>`;
+        html += `<option value="${p.id}" ${String(selectedId) === String(p.id) ? 'selected' : ''}>${esc(label)}</option>`;
     });
     return html;
 }
-
 function populateSelects() {
     const fEl = document.getElementById('personFather');
     const mEl = document.getElementById('personMother');
@@ -915,17 +869,13 @@ function populateSelects() {
     updatePeopleDatalist();
 }
 
-/* =========================================================
-   إضافة فرد
-   ========================================================= */
+/* الإضافة */
 function addPerson() {
     const name = document.getElementById('personName').value.trim();
     if (!name) { toast('⚠️ الرجاء إدخال الاسم.', 'err'); document.getElementById('personName').focus(); return; }
-
     const fatherId = valOrNull('personFather');
     const motherId = valOrNull('personMother');
     const partners = getPartnersFromForm();
-
     const newId = 'p' + idCounter++;
     const person = {
         id: newId,
@@ -946,7 +896,6 @@ function addPerson() {
     refreshAll();
     toast(`✅ تمت إضافة "${name}" (#${person.seq})`);
 }
-
 function resetForm() {
     ['personName','personBirth','personDeath','personBirthPlace','personNotes','personImage']
         .forEach(id => document.getElementById(id).value = '');
@@ -959,7 +908,6 @@ function resetForm() {
     populateSelects();
     document.getElementById('personName').focus();
 }
-
 function startAddChild(parentId) {
     const parent = getById(parentId); if (!parent) return;
     populateSelects();
@@ -970,9 +918,7 @@ function startAddChild(parentId) {
     toast('👶 تم تحديد الوالد — أدخل اسم الابن/الابنة', 'info');
 }
 
-/* =========================================================
-   الصورة
-   ========================================================= */
+/* الصورة */
 document.getElementById('personImage').addEventListener('change', function (e) {
     const file = e.target.files[0]; if (!file) return;
     if (file.size > 2.5 * 1024 * 1024) {
@@ -989,15 +935,12 @@ document.getElementById('personImage').addEventListener('change', function (e) {
     reader.readAsDataURL(file);
 });
 
-/* =========================================================
-   العرض
-   ========================================================= */
+/* العرض */
 function getRoots() {
     return familyTree
         .filter(p => mainParentId(p) === null)
         .sort((a, b) => a.seq - b.seq);
 }
-
 function partnersDisplayHTML(person) {
     if (!person.partners || person.partners.length === 0) return '';
     const rows = person.partners.map(pt => {
@@ -1019,7 +962,6 @@ function partnersDisplayHTML(person) {
         </div>
     `;
 }
-
 function buildPersonCard(person, showActions = true) {
     const avatarHTML = (person.image && person.image.startsWith('data:image'))
         ? `<img class="person-avatar" src="${person.image}" alt="${esc(person.name)}">`
@@ -1063,7 +1005,6 @@ function buildPersonCard(person, showActions = true) {
         ${actionsHTML}
     `;
 }
-
 function buildTree(person, level, visited) {
     if (visited.has(person.id)) {
         return `<div class="family-card" style="border-right-color:${getColor(level)};opacity:.65;">
@@ -1073,10 +1014,8 @@ function buildTree(person, level, visited) {
     }
     visited.add(person.id);
     const children = childrenOf(person.id).sort((a, b) => a.seq - b.seq);
-
     let html = `<div class="family-card" style="border-right-color: ${getColor(level)};">`;
     html += buildPersonCard(person, true);
-
     if (children.length > 0) {
         html += `<div class="children-container"><div class="child-label">👶 الأبناء (${children.length})</div>`;
         children.forEach(c => { html += buildTree(c, level + 1, visited); });
@@ -1085,7 +1024,6 @@ function buildTree(person, level, visited) {
     html += `</div>`;
     return html;
 }
-
 function renderTree() {
     const container = document.getElementById('treeDisplay');
     document.getElementById('counter').textContent = `👥 ${familyTree.length} فرد`;
@@ -1125,7 +1063,6 @@ function renderTree() {
     }
     container.innerHTML = html;
 }
-
 function setView(v) {
     viewMode = v;
     document.getElementById('btnTree').classList.toggle('active', v === 'tree');
@@ -1137,9 +1074,6 @@ function clearSearch() {
     document.getElementById('searchInput').value = ''; searchTerm = ''; renderTree();
 }
 
-/* =========================================================
-   الإحصائيات
-   ========================================================= */
 function updateStats() {
     const males = familyTree.filter(p => p.gender === 'ذكر').length;
     const females = familyTree.filter(p => p.gender === 'أنثى').length;
@@ -1162,9 +1096,7 @@ function updateStats() {
     document.getElementById('rootsCount').textContent = getRoots().length;
 }
 
-/* =========================================================
-   التعديل
-   ========================================================= */
+/* التعديل */
 function editPerson(id) {
     const person = getById(id); if (!person) return;
     const overlay = document.createElement('div');
@@ -1264,7 +1196,6 @@ function saveEdit(id) {
     person.birthPlace = document.getElementById('editBirthPlace').value.trim();
     person.notes = document.getElementById('editNotes').value.trim();
 
-    // حفظ الأزواج
     const rows = document.querySelectorAll('#editPartnersList .partner-edit-row');
     const partners = [];
     rows.forEach(row => {
@@ -1277,15 +1208,12 @@ function saveEdit(id) {
 
     closeEdit(); refreshAll(); toast('✅ تم حفظ التعديلات');
 }
-
 function closeEdit() {
     if (window._editOverlay) { window._editOverlay.remove(); window._editOverlay = null; }
     document.body.style.overflow = 'auto';
 }
 
-/* =========================================================
-   الحذف
-   ========================================================= */
+/* الحذف */
 function deletePerson(id) {
     const person = getById(id); if (!person) return;
     const kids = childrenOf(id);
@@ -1294,12 +1222,11 @@ function deletePerson(id) {
     if (!confirm(msg)) return;
 
     familyTree.forEach(p => {
-        if (p.fatherId === id) p.fatherId = null;
-        if (p.motherId === id) p.motherId = null;
+        if (String(p.fatherId) === String(id)) p.fatherId = null;
+        if (String(p.motherId) === String(id)) p.motherId = null;
     });
-    familyTree = familyTree.filter(p => p.id !== id);
+    familyTree = familyTree.filter(p => String(p.id) !== String(id));
 
-    // إعادة ترقيم متسلسل
     familyTree.sort((a, b) => a.seq - b.seq);
     familyTree.forEach((p, i) => { p.seq = i + 1; });
     seqCounter = familyTree.length + 1;
@@ -1307,9 +1234,7 @@ function deletePerson(id) {
     refreshAll(); toast('🗑️ تم حذف ' + person.name);
 }
 
-/* =========================================================
-   تصدير / استيراد / مسح
-   ========================================================= */
+/* التصدير/الاستيراد */
 function exportData() {
     if (familyTree.length === 0) { toast('لا توجد بيانات.', 'err'); return; }
     const dataStr = JSON.stringify({ version: 7, people: familyTree, idCounter, seqCounter }, null, 2);
@@ -1322,7 +1247,6 @@ function exportData() {
     URL.revokeObjectURL(url);
     toast('📤 تم التصدير');
 }
-
 function importData(event) {
     const file = event.target.files[0]; if (!file) return;
     const reader = new FileReader();
@@ -1340,7 +1264,6 @@ function importData(event) {
     };
     reader.readAsText(file); event.target.value = '';
 }
-
 function clearAll() {
     if (familyTree.length === 0) { toast('الشجرة فارغة.', 'err'); return; }
     if (confirm('⚠️ مسح جميع البيانات؟ لا يمكن التراجع.')) {
@@ -1356,9 +1279,7 @@ function refreshAll() {
     saveToStorage();
 }
 
-/* =========================================================
-   تسجيل الدخول
-   ========================================================= */
+/* تسجيل الدخول */
 function togglePwVisibility() {
     const inp = document.getElementById('loginPassword');
     const btn = document.getElementById('togglePwBtn');
@@ -1449,7 +1370,6 @@ async function doLogin() {
         btn.disabled = false; btn.textContent = '🔓 دخول';
     }
 }
-
 function enterApp(isReturning) {
     document.getElementById('loginOverlay').style.display = 'none';
     document.getElementById('app').style.display = 'block';
@@ -1463,7 +1383,6 @@ function enterApp(isReturning) {
         toast(`📂 مرحبًا بعودتك — ${familyTree.length} فرد`, 'info');
     }
 }
-
 async function logout() {
     if (!confirm('تسجيل الخروج؟ البيانات ستبقى محفوظة برمزك.')) return;
     try { await saveToStorage(true); } catch (e) {}
@@ -1479,9 +1398,7 @@ async function logout() {
     toast('🔒 تم تسجيل الخروج');
 }
 
-/* =========================================================
-   المزامنة
-   ========================================================= */
+/* المزامنة */
 function startSyncPolling() {
     stopSyncPolling();
     if (!firebaseURL || !currentPasswordHash) return;
@@ -1521,9 +1438,7 @@ async function pollCloud() {
     } finally { isSyncing = false; }
 }
 
-/* =========================================================
-   عن التطبيق
-   ========================================================= */
+/* عن التطبيق */
 function showAbout() {
     document.getElementById('aboutOverlay').classList.add('show');
     document.body.style.overflow = 'hidden';
@@ -1539,9 +1454,7 @@ document.addEventListener('keydown', e => {
     if (e.key === 'Escape') { closeAbout(); closeEdit(); }
 });
 
-/* =========================================================
-   التشغيل
-   ========================================================= */
+/* التشغيل */
 window.onload = function () {
     document.getElementById('loginOverlay').style.display = 'flex';
     document.body.style.overflow = 'hidden';
