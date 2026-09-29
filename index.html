@@ -461,12 +461,12 @@
             </select>
         </div>
         <div>
-            <label>👨 الأب (اختر من القائمة)</label>
-            <select id="personFather"></select>
+            <label>👨 الأب (اكتب أو اختر من الذكور)</label>
+            <input type="text" id="personFather" list="fathersList" placeholder="✍️ اكتب أو اختر" autocomplete="off">
         </div>
         <div>
-            <label>👩 الأم (اختر من القائمة)</label>
-            <select id="personMother"></select>
+            <label>👩 الأم (اكتب أو اختر من الإناث)</label>
+            <input type="text" id="personMother" list="mothersList" placeholder="✍️ اكتب أو اختر" autocomplete="off">
         </div>
         <div>
             <label>📅 تاريخ الميلاد</label>
@@ -507,6 +507,8 @@
     </div>
 
     <datalist id="existingPeopleList"></datalist>
+    <datalist id="fathersList"></datalist>
+    <datalist id="mothersList"></datalist>
 
     <div class="tree-container" id="treeDisplay">
         <div class="empty-msg">✨ لا يوجد أفراد. أضف عائلتك الآن!</div>
@@ -515,12 +517,12 @@
     <div class="note">
         <strong>📌 ملاحظات مهمة:</strong>
         <ul>
-            <li>💑 <strong>تعدد الأزواج:</strong> اضغط زر "+ إضافة زوج/زوجة" لإضافة أكثر من زوج/زوجة.</li>
-            <li>✍️ <strong>كتابة حرة:</strong> يمكنك كتابة اسم الزوج/الزوجة مباشرة، أو اختيار اسم من الاقتراحات.</li>
-            <li>💔 <strong>الحالة:</strong> يمكن تحديد "متزوج" / "مطلق" / "متوفى" لكل زوج.</li>
-            <li>🔢 <strong>الأرقام التسلسلية:</strong> تظهر في القوائم المنسدلة للتمييز بين الأسماء المتشابهة.</li>
-            <li>🔐 <strong>تذكرني:</strong> عند تفعيله، يدخل تلقائياً في المرات القادمة.</li>
-            <li>☁️ <strong>المزامنة:</strong> تعمل تلقائياً — لا حاجة لإعدادات.</li>
+            <li>👨 <strong>حقل الأب:</strong> اكتب اسم الأب أو اختر من الاقتراحات (ذكور فقط).</li>
+            <li>👩 <strong>حقل الأم:</strong> اكتب اسم الأم أو اختر من الاقتراحات (إناث فقط).</li>
+            <li>💑 <strong>تعدد الأزواج:</strong> اضغط "+ إضافة زوج/زوجة".</li>
+            <li>✍️ <strong>كتابة حرة:</strong> يمكنك كتابة أي اسم في كل الحقول.</li>
+            <li>🔢 <strong>أرقام تسلسلية:</strong> للتمييز بين الأسماء المتشابهة.</li>
+            <li>☁️ <strong>المزامنة:</strong> تعمل تلقائياً.</li>
         </ul>
     </div>
 </div>
@@ -530,18 +532,19 @@
         <span class="about-icon">🌳</span>
         <h2>عن شجرة العائلة</h2>
         <div style="text-align:center;">
-            <span class="about-version">الإصدار 7.1 — دعم تعدد الأزواج</span>
+            <span class="about-version">الإصدار 7.2 — كتابة حرة + اقتراحات ذكية</span>
         </div>
         <div class="about-section">
-            <h3>✨ الميزات الجديدة</h3>
+            <h3>✨ الميزات</h3>
             <ul>
-                <li>💑 <strong>مصفوفة أزواج:</strong> عدد غير محدود لكل شخص</li>
-                <li>✍️ <strong>كتابة حرة:</strong> لا قيود على اسم الزوج/الزوجة</li>
+                <li>✍️ <strong>كتابة حرة:</strong> في جميع الحقول</li>
+                <li>👨 <strong>اقتراحات الأب:</strong> من الذكور فقط</li>
+                <li>👩 <strong>اقتراحات الأم:</strong> من الإناث فقط</li>
+                <li>💑 <strong>تعدد الأزواج:</strong> عدد غير محدود</li>
                 <li>💔 <strong>حالات الزواج:</strong> متزوج / مطلق / متوفى</li>
-                <li>🔢 <strong>أرقام تسلسلية:</strong> في كل القوائم المنسدلة</li>
+                <li>🔢 <strong>أرقام تسلسلية</strong></li>
                 <li>☁️ مزامنة سحابية تلقائية</li>
                 <li>🔒 تشفير AES-256</li>
-                <li>📱 يعمل على الكومبيوتر والموبايل</li>
             </ul>
         </div>
         <div class="about-section">
@@ -579,6 +582,24 @@ function esc(s) {
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 const getById = id => familyTree.find(p => String(p.id) === String(id)) || null;
+
+function findPersonByName(name, gender) {
+    if (!name) return null;
+    const t = String(name).trim();
+    if (!t) return null;
+    // مطابقة دقيقة مع الجنس
+    let found = familyTree.find(p => p.name === t && p.gender === gender);
+    if (found) return found;
+    // مطابقة بصيغة "1 - أحمد"
+    const seqMatch = t.match(/^(\d+)\s*-\s*(.+)$/);
+    if (seqMatch) {
+        const seq = parseInt(seqMatch[1]);
+        const p = familyTree.find(x => x.seq === seq && x.gender === gender);
+        if (p) return p;
+    }
+    // مطابقة اسم فقط
+    return familyTree.find(p => p.name === t) || null;
+}
 
 function mainParentId(p) {
     if (p.fatherId && getById(p.fatherId)) return p.fatherId;
@@ -744,7 +765,6 @@ function setSyncBadge(state, text) {
 
 /* الترحيل */
 function migrateOldFormat() {
-    // 1) تطبيع كل المُعرّفات إلى نصوص بصيغة pN
     const idMap = new Map();
     familyTree.forEach((p, i) => {
         const oldId = p.id;
@@ -761,7 +781,6 @@ function migrateOldFormat() {
         p.id = newId;
     });
 
-    // 2) تحديث المراجع
     familyTree.forEach(p => {
         if (p.fatherId != null && p.fatherId !== '') {
             p.fatherId = idMap.get(String(p.fatherId)) || null;
@@ -771,21 +790,18 @@ function migrateOldFormat() {
         } else { p.motherId = null; }
     });
 
-    // 3) ضمان وجود seq
     familyTree.forEach((p, i) => {
         if (p.seq === undefined || p.seq === null || isNaN(p.seq)) p.seq = i + 1;
     });
 
-    // 4) ضمان وجود partners والحقول الأساسية
     familyTree.forEach(p => {
         if (!Array.isArray(p.partners)) p.partners = [];
         if (!p.gender) p.gender = 'ذكر';
-        ['name','birth','death','birthPlace','notes','image'].forEach(k => {
+        ['name','birth','death','birthPlace','notes','image','fatherName','motherName'].forEach(k => {
             if (p[k] === undefined || p[k] === null) p[k] = '';
         });
     });
 
-    // 5) إعادة ضبط العدادات
     const maxSeq = familyTree.reduce((m, p) => Math.max(m, Number(p.seq) || 0), 0);
     seqCounter = maxSeq + 1;
     let maxIdNum = 0;
@@ -849,23 +865,28 @@ function updatePeopleDatalist() {
         `<option value="${esc(p.name)}">${p.seq} - ${esc(p.name)}</option>`
     ).join('');
 }
-function optionsHTML(selectedId, emptyLabel, excludeId) {
-    const sorted = [...familyTree].sort((a, b) => a.seq - b.seq);
-    let html = `<option value="">${esc(emptyLabel)}</option>`;
-    sorted.forEach(p => {
-        if (excludeId && String(p.id) === String(excludeId)) return;
-        const f = p.fatherId ? getById(p.fatherId) : null;
-        const label = `${p.seq} - ${p.name}${f ? ' (ابن ' + f.name + ')' : ''}`;
-        html += `<option value="${p.id}" ${String(selectedId) === String(p.id) ? 'selected' : ''}>${esc(label)}</option>`;
-    });
-    return html;
+
+function updateParentDatalists() {
+    const males = familyTree.filter(p => p.gender === 'ذكر').sort((a, b) => a.seq - b.seq);
+    const females = familyTree.filter(p => p.gender === 'أنثى').sort((a, b) => a.seq - b.seq);
+    const fDL = document.getElementById('fathersList');
+    const mDL = document.getElementById('mothersList');
+    if (fDL) {
+        fDL.innerHTML = males.map(p => {
+            const f = p.fatherId ? getById(p.fatherId) : null;
+            return `<option value="${esc(p.name)}">${p.seq} - ${esc(p.name)}${f ? ' (ابن ' + esc(f.name) + ')' : ''}</option>`;
+        }).join('');
+    }
+    if (mDL) {
+        mDL.innerHTML = females.map(p => {
+            const f = p.fatherId ? getById(p.fatherId) : null;
+            return `<option value="${esc(p.name)}">${p.seq} - ${esc(p.name)}${f ? ' (ابنة ' + esc(f.name) + ')' : ''}</option>`;
+        }).join('');
+    }
 }
+
 function populateSelects() {
-    const fEl = document.getElementById('personFather');
-    const mEl = document.getElementById('personMother');
-    if (!fEl || !mEl) return;
-    fEl.innerHTML = optionsHTML(null, '— بدون (جذر) —', null);
-    mEl.innerHTML = optionsHTML(null, '— غير محددة —', null);
+    updateParentDatalists();
     updatePeopleDatalist();
 }
 
@@ -873,8 +894,16 @@ function populateSelects() {
 function addPerson() {
     const name = document.getElementById('personName').value.trim();
     if (!name) { toast('⚠️ الرجاء إدخال الاسم.', 'err'); document.getElementById('personName').focus(); return; }
-    const fatherId = valOrNull('personFather');
-    const motherId = valOrNull('personMother');
+
+    const fatherNameInput = document.getElementById('personFather').value.trim();
+    const motherNameInput = document.getElementById('personMother').value.trim();
+    const fatherPerson = findPersonByName(fatherNameInput, 'ذكر');
+    const motherPerson = findPersonByName(motherNameInput, 'أنثى');
+    const fatherId = fatherPerson ? fatherPerson.id : null;
+    const motherId = motherPerson ? motherPerson.id : null;
+    const fatherName = fatherPerson ? '' : fatherNameInput;
+    const motherName = motherPerson ? '' : motherNameInput;
+
     const partners = getPartnersFromForm();
     const newId = 'p' + idCounter++;
     const person = {
@@ -884,6 +913,8 @@ function addPerson() {
         gender: document.getElementById('personGender').value,
         fatherId: fatherId || null,
         motherId: motherId || null,
+        fatherName: fatherName || '',
+        motherName: motherName || '',
         partners: partners,
         birth: document.getElementById('personBirth').value,
         death: document.getElementById('personDeath').value,
@@ -897,7 +928,7 @@ function addPerson() {
     toast(`✅ تمت إضافة "${name}" (#${person.seq})`);
 }
 function resetForm() {
-    ['personName','personBirth','personDeath','personBirthPlace','personNotes','personImage']
+    ['personName','personBirth','personDeath','personBirthPlace','personNotes','personImage','personFather','personMother']
         .forEach(id => document.getElementById(id).value = '');
     document.getElementById('personGender').value = 'ذكر';
     selectedImage = null;
@@ -911,8 +942,8 @@ function resetForm() {
 function startAddChild(parentId) {
     const parent = getById(parentId); if (!parent) return;
     populateSelects();
-    if (parent.gender === 'أنثى') document.getElementById('personMother').value = parent.id;
-    else document.getElementById('personFather').value = parent.id;
+    if (parent.gender === 'أنثى') document.getElementById('personMother').value = parent.name;
+    else document.getElementById('personFather').value = parent.name;
     document.getElementById('addForm').scrollIntoView({ behavior: 'smooth', block: 'center' });
     setTimeout(() => document.getElementById('personName').focus(), 350);
     toast('👶 تم تحديد الوالد — أدخل اسم الابن/الابنة', 'info');
@@ -971,7 +1002,9 @@ function buildPersonCard(person, showActions = true) {
 
     const details = [];
     if (father) details.push(`👨 الأب: ${esc(father.name)}`);
+    else if (person.fatherName) details.push(`👨 الأب: ${esc(person.fatherName)} (غير مرتبط)`);
     if (mother) details.push(`👩 الأم: ${esc(mother.name)}`);
+    else if (person.motherName) details.push(`👩 الأم: ${esc(person.motherName)} (غير مرتبطة)`);
     if (person.birth) details.push(`📅 مولود: ${esc(person.birth)}`);
     if (person.death) details.push(`⚰️ متوفى: ${esc(person.death)}`);
     if (person.birthPlace) details.push(`📍 ${esc(person.birthPlace)}`);
@@ -1038,6 +1071,8 @@ function renderTree() {
             p.name.toLowerCase().includes(term) ||
             (p.notes || '').toLowerCase().includes(term) ||
             (p.birthPlace || '').toLowerCase().includes(term) ||
+            (p.fatherName || '').toLowerCase().includes(term) ||
+            (p.motherName || '').toLowerCase().includes(term) ||
             (p.partners || []).some(pt => pt.name.toLowerCase().includes(term))
         );
         if (results.length === 0) {
@@ -1102,6 +1137,9 @@ function editPerson(id) {
     const overlay = document.createElement('div');
     overlay.className = 'modal-overlay';
 
+    const fatherVal = person.fatherId ? (getById(person.fatherId)?.name || '') : (person.fatherName || '');
+    const motherVal = person.motherId ? (getById(person.motherId)?.name || '') : (person.motherName || '');
+
     const partnersHTML = (person.partners || []).map((pt, i) => `
         <div class="partner-edit-row" data-index="${i}">
             <input type="text" class="epartner-name" value="${esc(pt.name)}" list="existingPeopleList" placeholder="اسم الزوج/الزوجة">
@@ -1123,8 +1161,8 @@ function editPerson(id) {
                 <option value="ذكر" ${person.gender === 'ذكر' ? 'selected' : ''}>👨 ذكر</option>
                 <option value="أنثى" ${person.gender === 'أنثى' ? 'selected' : ''}>👩 أنثى</option>
             </select></div>
-            <div><label>👨 الأب</label><select id="editFather"></select></div>
-            <div><label>👩 الأم</label><select id="editMother"></select></div>
+            <div><label>👨 الأب (ذكور فقط)</label><input type="text" id="editFather" list="fathersList" value="${esc(fatherVal)}" placeholder="✍️ اكتب أو اختر" autocomplete="off"></div>
+            <div><label>👩 الأم (إناث فقط)</label><input type="text" id="editMother" list="mothersList" value="${esc(motherVal)}" placeholder="✍️ اكتب أو اختر" autocomplete="off"></div>
             <div><label>📅 تاريخ الميلاد</label><input type="date" id="editBirth" value="${esc(person.birth)}"></div>
             <div><label>⚰️ تاريخ الوفاة</label><input type="date" id="editDeath" value="${esc(person.death)}"></div>
             <div><label>📍 مكان الميلاد</label><input type="text" id="editBirthPlace" value="${esc(person.birthPlace)}"></div>
@@ -1151,9 +1189,6 @@ function editPerson(id) {
     document.body.style.overflow = 'hidden';
     window._editOverlay = overlay;
     overlay.addEventListener('click', e => { if (e.target === overlay) closeEdit(); });
-
-    document.getElementById('editFather').innerHTML = optionsHTML(person.fatherId, '— بدون (جذر) —', person.id);
-    document.getElementById('editMother').innerHTML = optionsHTML(person.motherId, '— غير محددة —', person.id);
 }
 
 function addEditPartnerRow() {
@@ -1181,8 +1216,13 @@ function saveEdit(id) {
     const newName = document.getElementById('editName').value.trim();
     if (!newName) { toast('⚠️ الاسم مطلوب!', 'err'); return; }
 
-    const newFather = valOrNull('editFather');
-    const newMother = valOrNull('editMother');
+    const editFatherNameInput = document.getElementById('editFather').value.trim();
+    const editMotherNameInput = document.getElementById('editMother').value.trim();
+    const editFatherPerson = findPersonByName(editFatherNameInput, 'ذكر');
+    const editMotherPerson = findPersonByName(editMotherNameInput, 'أنثى');
+    const newFather = editFatherPerson ? editFatherPerson.id : null;
+    const newMother = editMotherPerson ? editMotherPerson.id : null;
+
     if ((newFather && createsCycle(person.id, newFather)) || (newMother && createsCycle(person.id, newMother))) {
         toast('⚠️ لا يمكن ربط الشخص بأحد أبنائه!', 'err'); return;
     }
@@ -1191,6 +1231,8 @@ function saveEdit(id) {
     person.gender = document.getElementById('editGender').value;
     person.fatherId = newFather || null;
     person.motherId = newMother || null;
+    person.fatherName = editFatherPerson ? '' : editFatherNameInput;
+    person.motherName = editMotherPerson ? '' : editMotherNameInput;
     person.birth = document.getElementById('editBirth').value;
     person.death = document.getElementById('editDeath').value;
     person.birthPlace = document.getElementById('editBirthPlace').value.trim();
