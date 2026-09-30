@@ -520,7 +520,7 @@
             <li>👨 <strong>حقل الأب:</strong> اكتب اسم الأب أو اختر من الاقتراحات (ذكور فقط).</li>
             <li>👩 <strong>حقل الأم:</strong> اكتب اسم الأم أو اختر من الاقتراحات (إناث فقط).</li>
             <li>💑 <strong>تعدد الأزواج:</strong> اضغط "+ إضافة زوج/زوجة".</li>
-            <li>✍️ <strong>كتابة حرة:</strong> يمكنك كتابة أي اسم في كل الحقول.</li>
+            <li>📸 <strong>الصور:</strong> يمكن تغييرها أو إزالتها في نافذة التعديل.</li>
             <li>🔢 <strong>أرقام تسلسلية:</strong> للتمييز بين الأسماء المتشابهة.</li>
             <li>☁️ <strong>المزامنة:</strong> تعمل تلقائياً.</li>
         </ul>
@@ -532,17 +532,17 @@
         <span class="about-icon">🌳</span>
         <h2>عن شجرة العائلة</h2>
         <div style="text-align:center;">
-            <span class="about-version">الإصدار 7.2 — كتابة حرة + اقتراحات ذكية</span>
+            <span class="about-version">الإصدار 7.3 — تعديل الصور</span>
         </div>
         <div class="about-section">
             <h3>✨ الميزات</h3>
             <ul>
-                <li>✍️ <strong>كتابة حرة:</strong> في جميع الحقول</li>
+                <li>📸 <strong>إضافة وتعديل وإزالة الصور</strong></li>
+                <li>✍️ <strong>كتابة حرة</strong> في جميع الحقول</li>
                 <li>👨 <strong>اقتراحات الأب:</strong> من الذكور فقط</li>
                 <li>👩 <strong>اقتراحات الأم:</strong> من الإناث فقط</li>
                 <li>💑 <strong>تعدد الأزواج:</strong> عدد غير محدود</li>
                 <li>💔 <strong>حالات الزواج:</strong> متزوج / مطلق / متوفى</li>
-                <li>🔢 <strong>أرقام تسلسلية</strong></li>
                 <li>☁️ مزامنة سحابية تلقائية</li>
                 <li>🔒 تشفير AES-256</li>
             </ul>
@@ -565,6 +565,7 @@ let familyTree = [];
 let seqCounter = 1;
 let idCounter = 1;
 let selectedImage = null;
+let editSelectedImage = null;
 let searchTerm = '';
 let viewMode = 'tree';
 let currentPassword = null;
@@ -587,17 +588,14 @@ function findPersonByName(name, gender) {
     if (!name) return null;
     const t = String(name).trim();
     if (!t) return null;
-    // مطابقة دقيقة مع الجنس
     let found = familyTree.find(p => p.name === t && p.gender === gender);
     if (found) return found;
-    // مطابقة بصيغة "1 - أحمد"
     const seqMatch = t.match(/^(\d+)\s*-\s*(.+)$/);
     if (seqMatch) {
         const seq = parseInt(seqMatch[1]);
         const p = familyTree.find(x => x.seq === seq && x.gender === gender);
         if (p) return p;
     }
-    // مطابقة اسم فقط
     return familyTree.find(p => p.name === t) || null;
 }
 
@@ -949,7 +947,7 @@ function startAddChild(parentId) {
     toast('👶 تم تحديد الوالد — أدخل اسم الابن/الابنة', 'info');
 }
 
-/* الصورة */
+/* الصورة - نموذج الإضافة */
 document.getElementById('personImage').addEventListener('change', function (e) {
     const file = e.target.files[0]; if (!file) return;
     if (file.size > 2.5 * 1024 * 1024) {
@@ -1153,6 +1151,11 @@ function editPerson(id) {
         </div>
     `).join('');
 
+    const hasImg = (person.image && person.image.startsWith('data:image'));
+    const previewHTML = hasImg
+        ? `<img src="${person.image}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #3f51b5;">`
+        : `<div style="width:80px;height:80px;border-radius:50%;background:#e8eaf6;display:flex;align-items:center;justify-content:center;font-size:38px;border:3px solid #3f51b5;">${person.gender === 'أنثى' ? '👩' : '👨'}</div>`;
+
     overlay.innerHTML = `<div class="modal-box">
         <h2>✏️ تعديل بيانات ${esc(person.name)} (#${person.seq})</h2>
         <div class="edit-grid">
@@ -1167,6 +1170,20 @@ function editPerson(id) {
             <div><label>⚰️ تاريخ الوفاة</label><input type="date" id="editDeath" value="${esc(person.death)}"></div>
             <div><label>📍 مكان الميلاد</label><input type="text" id="editBirthPlace" value="${esc(person.birthPlace)}"></div>
             <div class="full-width"><label>📝 ملاحظات</label><textarea id="editNotes">${esc(person.notes)}</textarea></div>
+
+            <div class="full-width">
+                <label>📸 الصورة الشخصية</label>
+                <div style="display:flex;align-items:center;gap:15px;flex-wrap:wrap;">
+                    <div id="editImagePreview">${previewHTML}</div>
+                    <div style="flex:1;min-width:200px;">
+                        <div class="file-input-wrapper">
+                            <label id="editImageLabel">📸 تغيير الصورة</label>
+                            <input type="file" id="editImageInput" accept="image/*">
+                        </div>
+                        ${hasImg ? `<button type="button" onclick="removeEditImage()" style="background:#e53935;color:white;border:none;padding:8px 16px;border-radius:10px;font-weight:bold;cursor:pointer;margin-top:8px;width:100%;">🗑️ إزالة الصورة</button>` : ''}
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="partners-edit-section" style="margin-top:15px;">
@@ -1189,6 +1206,36 @@ function editPerson(id) {
     document.body.style.overflow = 'hidden';
     window._editOverlay = overlay;
     overlay.addEventListener('click', e => { if (e.target === overlay) closeEdit(); });
+
+    editSelectedImage = null;
+    setTimeout(() => {
+        const imgInput = document.getElementById('editImageInput');
+        if (imgInput) {
+            imgInput.addEventListener('change', function (e) {
+                const file = e.target.files[0]; if (!file) return;
+                if (file.size > 2.5 * 1024 * 1024) {
+                    if (!confirm('حجم الصورة كبير. المتابعة؟')) { e.target.value = ''; return; }
+                }
+                const reader = new FileReader();
+                reader.onload = ev => {
+                    editSelectedImage = ev.target.result;
+                    const preview = document.getElementById('editImagePreview');
+                    if (preview) preview.innerHTML = `<img src="${editSelectedImage}" style="width:80px;height:80px;border-radius:50%;object-fit:cover;border:3px solid #43a047;">`;
+                    const lbl = document.getElementById('editImageLabel');
+                    if (lbl) { lbl.textContent = '✅ تم الاختيار'; lbl.style.background = '#43a047'; }
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+    }, 100);
+}
+
+function removeEditImage() {
+    editSelectedImage = '__REMOVE__';
+    const preview = document.getElementById('editImagePreview');
+    if (preview) preview.innerHTML = `<div style="width:80px;height:80px;border-radius:50%;background:#e8eaf6;display:flex;align-items:center;justify-content:center;font-size:38px;border:3px solid #3f51b5;">👤</div>`;
+    const lbl = document.getElementById('editImageLabel');
+    if (lbl) { lbl.textContent = '📸 تم الإزالة — اختر صورة جديدة'; lbl.style.background = '#43a047'; }
 }
 
 function addEditPartnerRow() {
@@ -1238,6 +1285,13 @@ function saveEdit(id) {
     person.birthPlace = document.getElementById('editBirthPlace').value.trim();
     person.notes = document.getElementById('editNotes').value.trim();
 
+    // حفظ الصورة
+    if (editSelectedImage === '__REMOVE__') {
+        person.image = '';
+    } else if (editSelectedImage) {
+        person.image = editSelectedImage;
+    }
+
     const rows = document.querySelectorAll('#editPartnersList .partner-edit-row');
     const partners = [];
     rows.forEach(row => {
@@ -1253,6 +1307,7 @@ function saveEdit(id) {
 function closeEdit() {
     if (window._editOverlay) { window._editOverlay.remove(); window._editOverlay = null; }
     document.body.style.overflow = 'auto';
+    editSelectedImage = null;
 }
 
 /* الحذف */
