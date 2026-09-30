@@ -406,7 +406,7 @@
         <button class="login-btn" id="loginBtn" onclick="doLogin()">🔓 دخول</button>
         <p class="login-hint" id="loginHint">
             <strong>نفس الرمز = نفس البيانات</strong><br>
-            استخدم نفس الرمز على الكومبيوتر والموبايل لترى نفس الشجرة.
+            💡 الأرقام العربية والغربية مقبولة (١٢٣ = 123).
         </p>
     </div>
 </div>
@@ -521,7 +521,7 @@
             <li>👩 <strong>حقل الأم:</strong> اكتب اسم الأم أو اختر من الاقتراحات (إناث فقط).</li>
             <li>💑 <strong>تعدد الأزواج:</strong> اضغط "+ إضافة زوج/زوجة".</li>
             <li>📸 <strong>الصور:</strong> يمكن تغييرها أو إزالتها في نافذة التعديل.</li>
-            <li>🔢 <strong>أرقام تسلسلية:</strong> للتمييز بين الأسماء المتشابهة.</li>
+            <li>🔢 <strong>الأرقام العربية والغربية:</strong> كلاهما يعمل في رمز الدخول.</li>
             <li>☁️ <strong>المزامنة:</strong> تعمل تلقائياً.</li>
         </ul>
     </div>
@@ -532,11 +532,12 @@
         <span class="about-icon">🌳</span>
         <h2>عن شجرة العائلة</h2>
         <div style="text-align:center;">
-            <span class="about-version">الإصدار 7.3 — تعديل الصور</span>
+            <span class="about-version">الإصدار 7.4 — دعم الأرقام العربية</span>
         </div>
         <div class="about-section">
             <h3>✨ الميزات</h3>
             <ul>
+                <li>🔢 <strong>الأرقام العربية تلقائياً:</strong> ١٢٣ = 123</li>
                 <li>📸 <strong>إضافة وتعديل وإزالة الصور</strong></li>
                 <li>✍️ <strong>كتابة حرة</strong> في جميع الحقول</li>
                 <li>👨 <strong>اقتراحات الأب:</strong> من الذكور فقط</li>
@@ -583,6 +584,21 @@ function esc(s) {
         .replace(/"/g, '&quot;').replace(/'/g, '&#39;');
 }
 const getById = id => familyTree.find(p => String(p.id) === String(id)) || null;
+
+// تحويل الأرقام العربية والفارسية إلى غربية
+function normalizeDigits(str) {
+    const arabic = '٠١٢٣٤٥٦٧٨٩';
+    const persian = '۰۱۲۳۴۵۶۷۸۹';
+    const western = '0123456789';
+    let result = '';
+    for (let i = 0; i < str.length; i++) {
+        const c = str[i];
+        let idx = arabic.indexOf(c);
+        if (idx === -1) idx = persian.indexOf(c);
+        result += idx !== -1 ? western[idx] : c;
+    }
+    return result;
+}
 
 function findPersonByName(name, gender) {
     if (!name) return null;
@@ -1285,7 +1301,6 @@ function saveEdit(id) {
     person.birthPlace = document.getElementById('editBirthPlace').value.trim();
     person.notes = document.getElementById('editNotes').value.trim();
 
-    // حفظ الصورة
     if (editSelectedImage === '__REMOVE__') {
         person.image = '';
     } else if (editSelectedImage) {
@@ -1395,7 +1410,7 @@ function hideLoginError() { document.getElementById('loginError').classList.remo
 
 async function doLogin() {
     hideLoginError();
-    const pw = document.getElementById('loginPassword').value;
+    const pw = normalizeDigits(document.getElementById('loginPassword').value);
     if (!pw || pw.length < 6) { showLoginError('⚠️ الرمز يجب أن يكون 6 أحرف على الأقل.'); return; }
     const btn = document.getElementById('loginBtn');
     btn.disabled = true; btn.textContent = '⏳ جاري التحقق...';
@@ -1431,7 +1446,7 @@ async function doLogin() {
                 currentSalt = salt; currentPasswordHash = hash;
                 lastSyncedAt = vault.updatedAt || 0;
 
-                if (document.getElementById('rememberMe').checked) localStorage.setItem(SAVED_PW_KEY, pw);
+                if (document.getElementById('rememberMe').checked) localStorage.setItem(SAVED_PW_KEY, normalizeDigits(pw));
                 else localStorage.removeItem(SAVED_PW_KEY);
 
                 migrateOldFormat();
@@ -1458,7 +1473,7 @@ async function doLogin() {
         currentSalt = salt; currentPasswordHash = hash;
         lastSyncedAt = emptyVault.updatedAt;
 
-        if (document.getElementById('rememberMe').checked) localStorage.setItem(SAVED_PW_KEY, pw);
+        if (document.getElementById('rememberMe').checked) localStorage.setItem(SAVED_PW_KEY, normalizeDigits(pw));
         enterApp(false);
         setSyncBadge('on', '☁️ متزامن');
         toast('🎉 تم إنشاء مساحة جديدة', 'info');
@@ -1559,12 +1574,12 @@ window.onload = function () {
     const count = Object.keys(vaults).length;
     if (count > 0) {
         document.getElementById('loginHint').innerHTML =
-            `🔑 يوجد <strong>${count}</strong> مساحة محفوظة.<br>أدخل رمزك للوصول إلى بياناتك.`;
+            `🔑 يوجد <strong>${count}</strong> مساحة محفوظة.<br>💡 الأرقام العربية والغربية مقبولة (١٢٣ = 123).`;
         document.getElementById('loginSubtitle').textContent = 'مرحبًا بعودتك';
     }
     const savedPw = localStorage.getItem(SAVED_PW_KEY);
     if (savedPw) {
-        document.getElementById('loginPassword').value = savedPw;
+        document.getElementById('loginPassword').value = normalizeDigits(savedPw);
         document.getElementById('rememberMe').checked = true;
         document.getElementById('loginSubtitle').textContent = '⏳ جاري الدخول تلقائياً...';
         setTimeout(() => doLogin(), 500);
